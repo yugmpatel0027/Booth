@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Frontier Bakery — Connect With Us</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F8F7F4;
+    color: #2D2D2D;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: #006058;
+    padding: 20px 24px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .header h1 {
+    color: #F2C800;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .header p {
+    color: #F8F7F4;
+    font-size: 13px;
+    margin-top: 4px;
+    opacity: 0.85;
+  }
+
+  .form-container {
+    padding: 20px 20px 40px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .lang-toggle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+    justify-content: center;
+  }
+
+  .lang-btn {
+    padding: 5px 12px;
+    border: 2px solid #006058;
+    border-radius: 20px;
+    background: transparent;
+    color: #006058;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .lang-btn.active {
+    background: #006058;
+    color: #F8F7F4;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #006058;
+    margin-bottom: 6px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: #2D2D2D;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: #006058;
+    box-shadow: 0 0 0 3px rgba(0,96,88,0.1);
+  }
+
+  textarea { height: 80px; resize: vertical; }
+
+  .required::after { content: ' *'; color: #D4231A; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #006058;
+    color: #F2C800;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+
+  .submit-btn:active { background: #004d47; }
+
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .success-msg .check {
+    width: 60px; height: 60px;
+    background: #006058;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 28px;
+    color: #F2C800;
+  }
+
+  .success-msg h2 { color: #006058; font-size: 20px; margin-bottom: 8px; }
+  .success-msg p { color: #666; font-size: 14px; }
+
+  .new-entry-btn {
+    margin-top: 20px;
+    padding: 12px 32px;
+    background: transparent;
+    color: #006058;
+    border: 2px solid #006058;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* PIN overlay */
+  .pin-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pin-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px 28px;
+    text-align: center;
+    width: 300px;
+  }
+
+  .pin-box h3 {
+    color: #006058;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .pin-input {
+    width: 100% !important;
+    text-align: center;
+    font-size: 28px !important;
+    letter-spacing: 12px;
+    padding: 12px !important;
+    border: 2px solid #ddd !important;
+    border-radius: 8px;
+  }
+
+  .pin-input:focus {
+    border-color: #006058 !important;
+  }
+
+  .pin-error {
+    color: #D4231A;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  .pin-cancel {
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* Admin panel — hidden by default */
+  .admin-panel {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #F8F7F4;
+    z-index: 250;
+    overflow-y: auto;
+  }
+
+  .admin-header {
+    background: #2D2D2D;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .admin-header h3 {
+    color: #F2C800;
+    font-size: 16px;
+  }
+
+  .admin-header-btns {
+    display: flex;
+    gap: 8px;
+  }
+
+  .admin-btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .export-btn { background: #F2C800; color: #2D2D2D; }
+  .close-admin-btn { background: transparent; color: #F8F7F4; border: 1px solid #F8F7F4; }
+  .clear-btn { background: transparent; color: #D4231A; border: 1px solid #D4231A; }
+
+  .admin-body { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+  .admin-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #eee;
+  }
+
+  .stat-card .num { font-size: 28px; font-weight: 700; color: #006058; }
+  .stat-card .lbl { font-size: 11px; color: #666; margin-top: 2px; }
+
+  .lead-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid #006058;
+    background: #fff;
+  }
+
+  .lead-card .name { font-weight: 700; font-size: 15px; color: #006058; }
+  .lead-card .company { font-size: 14px; color: #2D2D2D; margin-top: 2px; }
+  .lead-card .details { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.6; }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #2D2D2D;
+    padding: 6px 12px;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .checkbox-label input { width: 16px; padding: 0; }
+
+  .checkbox-label:has(input:checked) {
+    border-color: #006058;
+    background: rgba(0,96,88,0.05);
+  }
+
+  .no-leads-msg {
+    text-align: center;
+    color: #999;
+    padding: 40px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER — triple tap to open admin -->
+<div class="header" id="headerTap">
+  <h1>FRONTIER BAKERY</h1>
+  <p class="header-sub">Alimentaria 2026 — Pavilion 7, Stand E41</p>
+</div>
+
+<!-- FORM SECTION (buyer-facing) -->
+<div class="form-container" id="formSection">
+  <div class="lang-toggle" id="langToggle">
+    <button class="lang-btn active" data-lang="en">English</button>
+    <button class="lang-btn" data-lang="es">Español</button>
+    <button class="lang-btn" data-lang="fr">Français</button>
+    <button class="lang-btn" data-lang="de">Deutsch</button>
+    <button class="lang-btn" data-lang="pt">Português</button>
+    <button class="lang-btn" data-lang="it">Italiano</button>
+    <button class="lang-btn" data-lang="nl">Nederlands</button>
+    <button class="lang-btn" data-lang="ar">العربية</button>
+  </div>
+
+  <form id="leadForm" onsubmit="return submitForm(event)">
+    <div class="form-group">
+      <label class="required" id="lbl-name">Full Name</label>
+      <input type="text" id="name" required autocomplete="name" placeholder="John Smith">
+    </div>
+
+    <div class="form-group">
+      <label class="required" id="lbl-company">Company</label>
+      <input type="text" id="company" required autocomplete="organization" placeholder="">
+    </div>
+
+    <div class="form-group">
+      <label class="required" id="lbl-role">Job Title / Role</label>
+      <input type="text" id="role" required placeholder="Category Manager">
+    </div>
+
+    <div class="form-group">
+      <label class="required" id="lbl-email">Email</label>
+      <input type="email" id="email" required autocomplete="email" placeholder="name@company.com">
+    </div>
+
+    <div class="form-group">
+      <label id="lbl-phone">Phone</label>
+      <input type="tel" id="phone" autocomplete="tel" placeholder="+34 600 000 000">
+    </div>
+
+    <div class="form-group">
+      <label class="required" id="lbl-country">Country</label>
+      <select id="country" required>
+        <option value="" id="opt-country-default">Select country</option>
+        <option value="Spain">Spain / España</option>
+        <option value="France">France</option>
+        <option value="Germany">Germany / Deutschland</option>
+        <option value="Italy">Italy / Italia</option>
+        <option value="Portugal">Portugal</option>
+        <option value="Netherlands">Netherlands</option>
+        <option value="Belgium">Belgium / Belgique</option>
+        <option value="UK">United Kingdom</option>
+        <option value="Sweden">Sweden / Sverige</option>
+        <option value="Poland">Poland / Polska</option>
+        <option value="Denmark">Denmark / Danmark</option>
+        <option value="Austria">Austria / Österreich</option>
+        <option value="Switzerland">Switzerland / Schweiz</option>
+        <option value="Greece">Greece / Ελλάδα</option>
+        <option value="Morocco">Morocco / المغرب</option>
+        <option value="UAE">UAE / الإمارات</option>
+        <option value="Saudi Arabia">Saudi Arabia / السعودية</option>
+        <option value="Canada">Canada</option>
+        <option value="USA">USA</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label id="lbl-type">Company Type</label>
+      <select id="companyType">
+        <option value="" id="opt-type-default">Select type</option>
+        <option value="Retailer">Retailer / Grocery Chain</option>
+        <option value="Distributor">Distributor</option>
+        <option value="Foodservice">Foodservice / HoReCa</option>
+        <option value="Private Label">Private Label Buyer</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label id="lbl-products">Products of Interest</label>
+      <div class="checkbox-group">
+        <label class="checkbox-label"><input type="checkbox" value="Naan"> Naan</label>
+        <label class="checkbox-label"><input type="checkbox" value="Pita"> Pita</label>
+        <label class="checkbox-label"><input type="checkbox" value="Roti"> Roti</label>
+        <label class="checkbox-label"><input type="checkbox" value="Pani Puri"> Pani Puri</label>
+        <label class="checkbox-label"><input type="checkbox" value="Specialty"> Specialty</label>
+        <label class="checkbox-label"><input type="checkbox" value="Private Label"> Private Label</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label id="lbl-notes">Notes</label>
+      <textarea id="notes" placeholder="Volume, timeline, specific requirements..."></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" id="btn-submit">Submit</button>
+  </form>
+</div>
+
+<!-- SUCCESS MESSAGE -->
+<div class="success-msg" id="successSection">
+  <div class="check">✓</div>
+  <h2 id="msg-thanks">Thank You!</h2>
+  <p id="msg-touch">We'll be in touch soon.</p>
+  <button class="new-entry-btn" onclick="resetForm()" id="btn-next">Next Contact</button>
+</div>
+
+<!-- PIN OVERLAY -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <h3>Admin Access</h3>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
+    <p class="pin-error" id="pinError">Wrong PIN</p>
+    <button class="pin-cancel" onclick="closePin()">Cancel</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL (hidden, PIN-protected) -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-header">
+    <h3 id="adminTitle">Leads</h3>
+    <div class="admin-header-btns">
+      <button class="admin-btn export-btn" onclick="exportCSV()">Export CSV</button>
+      <button class="admin-btn clear-btn" onclick="clearLeads()">Clear All</button>
+      <button class="admin-btn close-admin-btn" onclick="closeAdmin()">Close</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="admin-stats">
+      <div class="stat-card">
+        <div class="num" id="statTotal">0</div>
+        <div class="lbl">Total Leads</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statToday">0</div>
+        <div class="lbl">Today</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="statCountries">0</div>
+        <div class="lbl">Countries</div>
+      </div>
+    </div>
+    <div id="leadsDisplay"></div>
+  </div>
+</div>
+
+<script>
+  // ===== PIN CONFIG =====
+  const ADMIN_PIN = '2026';  // Change this to your preferred PIN
+
+  // ===== LANGUAGE DATA =====
+  const L = {
+    en: { name: 'Full Name', company: 'Company', role: 'Job Title / Role', email: 'Email', phone: 'Phone', country: 'Country', type: 'Company Type', products: 'Products of Interest', notes: 'Notes', submit: 'Submit', thanks: 'Thank You!', touch: "We'll be in touch soon.", next: 'Next Contact', selCountry: 'Select country', selType: 'Select type', phName: 'John Smith', phRole: 'Category Manager', phNotes: 'Volume, timeline, specific requirements...' },
+    es: { name: 'Nombre Completo', company: 'Empresa', role: 'Cargo', email: 'Correo Electrónico', phone: 'Teléfono', country: 'País', type: 'Tipo de Empresa', products: 'Productos de Interés', notes: 'Notas', submit: 'Enviar', thanks: '¡Gracias!', touch: 'Nos pondremos en contacto pronto.', next: 'Siguiente Contacto', selCountry: 'Seleccionar país', selType: 'Seleccionar tipo', phName: 'Juan García', phRole: 'Gerente de Categoría', phNotes: 'Volumen, plazos, requisitos específicos...' },
+    fr: { name: 'Nom Complet', company: 'Entreprise', role: 'Poste', email: 'Email', phone: 'Téléphone', country: 'Pays', type: "Type d'Entreprise", products: "Produits d'Intérêt", notes: 'Notes', submit: 'Soumettre', thanks: 'Merci !', touch: 'Nous vous contacterons bientôt.', next: 'Contact Suivant', selCountry: 'Choisir le pays', selType: 'Choisir le type', phName: 'Jean Dupont', phRole: 'Responsable de Catégorie', phNotes: 'Volume, délais, exigences spécifiques...' },
+    de: { name: 'Vollständiger Name', company: 'Unternehmen', role: 'Position', email: 'E-Mail', phone: 'Telefon', country: 'Land', type: 'Unternehmenstyp', products: 'Produktinteresse', notes: 'Anmerkungen', submit: 'Absenden', thanks: 'Vielen Dank!', touch: 'Wir melden uns bald bei Ihnen.', next: 'Nächster Kontakt', selCountry: 'Land wählen', selType: 'Typ wählen', phName: 'Max Müller', phRole: 'Kategorie-Manager', phNotes: 'Menge, Zeitrahmen, spezifische Anforderungen...' },
+    pt: { name: 'Nome Completo', company: 'Empresa', role: 'Cargo', email: 'Email', phone: 'Telefone', country: 'País', type: 'Tipo de Empresa', products: 'Produtos de Interesse', notes: 'Notas', submit: 'Enviar', thanks: 'Obrigado!', touch: 'Entraremos em contacto em breve.', next: 'Próximo Contacto', selCountry: 'Selecionar país', selType: 'Selecionar tipo', phName: 'João Silva', phRole: 'Gestor de Categoria', phNotes: 'Volume, prazos, requisitos específicos...' },
+    it: { name: 'Nome Completo', company: 'Azienda', role: 'Ruolo', email: 'Email', phone: 'Telefono', country: 'Paese', type: "Tipo di Azienda", products: 'Prodotti di Interesse', notes: 'Note', submit: 'Invia', thanks: 'Grazie!', touch: 'Vi contatteremo presto.', next: 'Prossimo Contatto', selCountry: 'Seleziona paese', selType: 'Seleziona tipo', phName: 'Marco Rossi', phRole: 'Category Manager', phNotes: 'Volume, tempistiche, requisiti specifici...' },
+    nl: { name: 'Volledige Naam', company: 'Bedrijf', role: 'Functie', email: 'E-mail', phone: 'Telefoon', country: 'Land', type: 'Bedrijfstype', products: 'Productinteresse', notes: 'Opmerkingen', submit: 'Verzenden', thanks: 'Bedankt!', touch: 'We nemen snel contact met u op.', next: 'Volgend Contact', selCountry: 'Selecteer land', selType: 'Selecteer type', phName: 'Jan de Vries', phRole: 'Categorie Manager', phNotes: 'Volume, tijdlijn, specifieke eisen...' },
+    ar: { name: 'الاسم الكامل', company: 'الشركة', role: 'المسمى الوظيفي', email: 'البريد الإلكتروني', phone: 'الهاتف', country: 'البلد', type: 'نوع الشركة', products: 'المنتجات المطلوبة', notes: 'ملاحظات', submit: 'إرسال', thanks: '!شكراً لك', touch: 'سنتواصل معك قريباً.', next: 'جهة اتصال تالية', selCountry: 'اختر البلد', selType: 'اختر النوع', phName: 'محمد أحمد', phRole: 'مدير الفئة', phNotes: 'الحجم، الجدول الزمني، المتطلبات...' },
+  };
+
+  let currentLang = 'en';
+
+  // ===== LANGUAGE SWITCHING =====
+  document.getElementById('langToggle').addEventListener('click', function(e) {
+    const btn = e.target.closest('.lang-btn');
+    if (!btn) return;
+    const lang = btn.dataset.lang;
+    setLang(lang);
+  });
+
+  function setLang(lang) {
+    currentLang = lang;
+    const t = L[lang];
+    if (!t) return;
+
+    // Toggle buttons
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+
+    // RTL for Arabic
+    const form = document.getElementById('leadForm');
+    if (lang === 'ar') {
+      form.style.direction = 'rtl';
+      form.style.textAlign = 'right';
+    } else {
+      form.style.direction = 'ltr';
+      form.style.textAlign = 'left';
+    }
+
+    // Labels
+    document.getElementById('lbl-name').textContent = t.name;
+    document.getElementById('lbl-company').textContent = t.company;
+    document.getElementById('lbl-role').textContent = t.role;
+    document.getElementById('lbl-email').textContent = t.email;
+    document.getElementById('lbl-phone').textContent = t.phone;
+    document.getElementById('lbl-country').textContent = t.country;
+    document.getElementById('lbl-type').textContent = t.type;
+    document.getElementById('lbl-products').textContent = t.products;
+    document.getElementById('lbl-notes').textContent = t.notes;
+    document.getElementById('btn-submit').textContent = t.submit;
+    document.getElementById('msg-thanks').textContent = t.thanks;
+    document.getElementById('msg-touch').textContent = t.touch;
+    document.getElementById('btn-next').textContent = t.next;
+    document.getElementById('opt-country-default').textContent = t.selCountry;
+    document.getElementById('opt-type-default').textContent = t.selType;
+
+    // Re-add required asterisks
+    document.querySelectorAll('.required').forEach(el => {
+      if (!el.textContent.includes('*')) return;
+    });
+    ['lbl-name','lbl-company','lbl-role','lbl-email','lbl-country'].forEach(id => {
+      document.getElementById(id).classList.add('required');
+    });
+
+    // Placeholders
+    document.getElementById('name').placeholder = t.phName;
+    document.getElementById('role').placeholder = t.phRole;
+    document.getElementById('notes').placeholder = t.phNotes;
+  }
+
+  // ===== DATA STORAGE =====
+  function getLeads() {
+    try { return JSON.parse(localStorage.getItem('frontier_leads') || '[]'); }
+    catch(e) { return []; }
+  }
+
+  function saveLeads(leads) {
+    localStorage.setItem('frontier_leads', JSON.stringify(leads));
+  }
+
+  // ===== FORM SUBMIT =====
+  function submitForm(e) {
+    e.preventDefault();
+
+    const products = [];
+    document.querySelectorAll('.checkbox-group input:checked').forEach(cb => products.push(cb.value));
+
+    const lead = {
+      timestamp: new Date().toISOString(),
+      name: document.getElementById('name').value.trim(),
+      company: document.getElementById('company').value.trim(),
+      role: document.getElementById('role').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      country: document.getElementById('country').value,
+      companyType: document.getElementById('companyType').value,
+      products: products.join(', '),
+      notes: document.getElementById('notes').value.trim(),
+      language: currentLang
+    };
+
+    const leads = getLeads();
+    leads.push(lead);
+    saveLeads(leads);
+
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successSection').style.display = 'block';
+  }
+
+  function resetForm() {
+    document.getElementById('leadForm').reset();
+    document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
+    document.getElementById('formSection').style.display = 'block';
+    document.getElementById('successSection').style.display = 'none';
+    setLang('en');  // reset to English for next buyer
+  }
+
+  // ===== TRIPLE-TAP ADMIN ACCESS =====
+  let tapCount = 0;
+  let tapTimer = null;
+
+  document.getElementById('headerTap').addEventListener('click', function() {
+    tapCount++;
+    if (tapCount === 1) {
+      tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+    }
+    if (tapCount >= 3) {
+      clearTimeout(tapTimer);
+      tapCount = 0;
+      openPin();
+    }
+  });
+
+  // ===== PIN ENTRY =====
+  function openPin() {
+    document.getElementById('pinOverlay').style.display = 'flex';
+    const inp = document.getElementById('pinInput');
+    inp.value = '';
+    document.getElementById('pinError').style.display = 'none';
+    setTimeout(() => inp.focus(), 100);
+  }
+
+  function closePin() {
+    document.getElementById('pinOverlay').style.display = 'none';
+    document.getElementById('pinInput').value = '';
+  }
+
+  document.getElementById('pinInput').addEventListener('input', function() {
+    if (this.value.length === 4) {
+      if (this.value === ADMIN_PIN) {
+        closePin();
+        openAdmin();
+      } else {
+        document.getElementById('pinError').style.display = 'block';
+        this.value = '';
+        setTimeout(() => { document.getElementById('pinError').style.display = 'none'; }, 1500);
+      }
+    }
+  });
+
+  // Close PIN on overlay click
+  document.getElementById('pinOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closePin();
+  });
+
+  // ===== ADMIN PANEL =====
+  function openAdmin() {
+    const panel = document.getElementById('adminPanel');
+    panel.style.display = 'block';
+    renderAdmin();
+  }
+
+  function closeAdmin() {
+    document.getElementById('adminPanel').style.display = 'none';
+  }
+
+  function renderAdmin() {
+    const leads = getLeads();
+    const today = new Date().toISOString().slice(0, 10);
+    const todayLeads = leads.filter(l => l.timestamp.slice(0, 10) === today);
+    const countries = new Set(leads.map(l => l.country).filter(Boolean));
+
+    document.getElementById('statTotal').textContent = leads.length;
+    document.getElementById('statToday').textContent = todayLeads.length;
+    document.getElementById('statCountries').textContent = countries.size;
+    document.getElementById('adminTitle').textContent = leads.length + ' Lead' + (leads.length !== 1 ? 's' : '');
+
+    const display = document.getElementById('leadsDisplay');
+    if (leads.length === 0) {
+      display.innerHTML = '<p class="no-leads-msg">No leads captured yet</p>';
+      return;
+    }
+
+    display.innerHTML = leads.slice().reverse().map(l => `
+      <div class="lead-card">
+        <div class="name">${esc(l.name)}</div>
+        <div class="company">${esc(l.company)} — ${esc(l.role)}</div>
+        <div class="details">
+          ${esc(l.email)}${l.phone ? ' | ' + esc(l.phone) : ''}<br>
+          ${esc(l.country)}${l.companyType ? ' | ' + esc(l.companyType) : ''}<br>
+          ${l.products ? 'Products: ' + esc(l.products) : ''}
+          ${l.notes ? '<br>Notes: ' + esc(l.notes) : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function esc(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ===== EXPORT CSV =====
+  function exportCSV() {
+    const leads = getLeads();
+    if (leads.length === 0) { alert('No leads to export'); return; }
+
+    const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language'];
+    const rows = leads.map(l => [
+      l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language
+    ].map(v => '"' + (v || '').replace(/"/g, '""') + '"'));
+
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'frontier_leads_alimentaria_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== CLEAR LEADS =====
+  function clearLeads() {
+    if (confirm('Delete ALL leads? This cannot be undone. Make sure you exported first.')) {
+      if (confirm('Are you really sure? This will permanently delete all captured data.')) {
+        localStorage.removeItem('frontier_leads');
+        renderAdmin();
+      }
+    }
+  }
+</script>
+</body>
+</html>
