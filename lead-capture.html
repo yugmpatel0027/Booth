@@ -24,308 +24,137 @@
     -webkit-user-select: none;
   }
 
-  .header h1 {
-    color: #F2C800;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
+  .header h1 { color: #F2C800; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .header p { color: #F8F7F4; font-size: 13px; margin-top: 4px; opacity: 0.85; }
 
-  .header p {
-    color: #F8F7F4;
-    font-size: 13px;
-    margin-top: 4px;
-    opacity: 0.85;
-  }
+  .form-container { padding: 20px 20px 40px; max-width: 480px; margin: 0 auto; }
 
-  .form-container {
-    padding: 20px 20px 40px;
-    max-width: 480px;
-    margin: 0 auto;
-  }
-
-  .lang-toggle {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 20px;
-    justify-content: center;
-  }
+  .lang-toggle { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; justify-content: center; }
 
   .lang-btn {
-    padding: 5px 12px;
-    border: 2px solid #006058;
-    border-radius: 20px;
-    background: transparent;
-    color: #006058;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
+    padding: 5px 12px; border: 2px solid #006058; border-radius: 20px;
+    background: transparent; color: #006058; font-size: 12px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
   }
-
-  .lang-btn.active {
-    background: #006058;
-    color: #F8F7F4;
-  }
+  .lang-btn.active { background: #006058; color: #F8F7F4; }
 
   .form-group { margin-bottom: 16px; }
 
-  label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: #006058;
-    margin-bottom: 6px;
-  }
+  label { display: block; font-size: 13px; font-weight: 600; color: #006058; margin-bottom: 6px; }
 
   input, select, textarea {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    font-family: 'Inter', sans-serif;
-    background: #fff;
-    color: #2D2D2D;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
+    width: 100%; padding: 12px 14px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 16px; font-family: 'Inter', sans-serif; background: #fff; color: #2D2D2D;
+    transition: border-color 0.2s; -webkit-appearance: none;
   }
 
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: #006058;
-    box-shadow: 0 0 0 3px rgba(0,96,88,0.1);
-  }
-
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #006058; box-shadow: 0 0 0 3px rgba(0,96,88,0.1); }
   textarea { height: 80px; resize: vertical; }
-
   .required::after { content: ' *'; color: #D4231A; }
 
   .submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: #006058;
-    color: #F2C800;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 8px;
-    letter-spacing: 0.5px;
-    transition: background 0.2s;
+    width: 100%; padding: 14px; background: #006058; color: #F2C800; border: none;
+    border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    letter-spacing: 0.5px; transition: background 0.2s;
   }
-
   .submit-btn:active { background: #004d47; }
 
-  .success-msg {
-    display: none;
-    text-align: center;
-    padding: 40px 20px;
-  }
-
+  /* SUCCESS PAGE */
+  .success-msg { display: none; text-align: center; padding: 40px 20px; max-width: 480px; margin: 0 auto; }
   .success-msg .check {
-    width: 60px; height: 60px;
-    background: #006058;
-    border-radius: 50%;
+    width: 60px; height: 60px; background: #006058; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 16px;
-    font-size: 28px;
-    color: #F2C800;
+    margin: 0 auto 16px; font-size: 28px; color: #F2C800;
   }
-
   .success-msg h2 { color: #006058; font-size: 20px; margin-bottom: 8px; }
-  .success-msg p { color: #666; font-size: 14px; }
+  .success-msg p { color: #666; font-size: 14px; margin-bottom: 16px; }
+
+  .catalog-btn {
+    display: inline-block; padding: 14px 28px; background: #006058; color: #F2C800;
+    border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+    cursor: pointer; text-decoration: none; margin-bottom: 12px; letter-spacing: 0.3px;
+  }
+  .catalog-btn:active { background: #004d47; }
+  .catalog-hint { font-size: 12px; color: #999; margin-bottom: 20px; }
 
   .new-entry-btn {
-    margin-top: 20px;
-    padding: 12px 32px;
-    background: transparent;
-    color: #006058;
-    border: 2px solid #006058;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    padding: 12px 32px; background: transparent; color: #006058;
+    border: 2px solid #006058; border-radius: 8px; font-size: 14px;
+    font-weight: 600; cursor: pointer;
   }
 
-  /* PIN overlay */
+  /* PIN OVERLAY */
   .pin-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.85);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85); z-index: 300; align-items: center; justify-content: center;
   }
-
-  .pin-box {
-    background: #fff;
-    border-radius: 16px;
-    padding: 32px 28px;
-    text-align: center;
-    width: 300px;
-  }
-
-  .pin-box h3 {
-    color: #006058;
-    font-size: 18px;
-    margin-bottom: 16px;
-  }
-
+  .pin-box { background: #fff; border-radius: 16px; padding: 32px 28px; text-align: center; width: 300px; }
+  .pin-box h3 { color: #006058; font-size: 18px; margin-bottom: 16px; }
   .pin-input {
-    width: 100% !important;
-    text-align: center;
-    font-size: 28px !important;
-    letter-spacing: 12px;
-    padding: 12px !important;
-    border: 2px solid #ddd !important;
-    border-radius: 8px;
+    width: 100% !important; text-align: center; font-size: 28px !important;
+    letter-spacing: 12px; padding: 12px !important; border: 2px solid #ddd !important; border-radius: 8px;
   }
+  .pin-input:focus { border-color: #006058 !important; }
+  .pin-error { color: #D4231A; font-size: 13px; margin-top: 8px; display: none; }
+  .pin-cancel { margin-top: 12px; background: none; border: none; color: #666; font-size: 13px; cursor: pointer; }
 
-  .pin-input:focus {
-    border-color: #006058 !important;
-  }
-
-  .pin-error {
-    color: #D4231A;
-    font-size: 13px;
-    margin-top: 8px;
-    display: none;
-  }
-
-  .pin-cancel {
-    margin-top: 12px;
-    background: none;
-    border: none;
-    color: #666;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  /* Admin panel — hidden by default */
-  .admin-panel {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: #F8F7F4;
-    z-index: 250;
-    overflow-y: auto;
-  }
-
+  /* ADMIN PANEL */
+  .admin-panel { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #F8F7F4; z-index: 250; overflow-y: auto; }
   .admin-header {
-    background: #2D2D2D;
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background: #2D2D2D; padding: 16px 20px; display: flex; justify-content: space-between;
+    align-items: center; position: sticky; top: 0; z-index: 10;
   }
+  .admin-header h3 { color: #F2C800; font-size: 16px; }
+  .admin-header-btns { display: flex; gap: 8px; align-items: center; }
 
-  .admin-header h3 {
-    color: #F2C800;
-    font-size: 16px;
-  }
-
-  .admin-header-btns {
-    display: flex;
-    gap: 8px;
-  }
-
-  .admin-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
+  .admin-btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
   .export-btn { background: #F2C800; color: #2D2D2D; }
   .close-admin-btn { background: transparent; color: #F8F7F4; border: 1px solid #F8F7F4; }
-  .clear-btn { background: transparent; color: #D4231A; border: 1px solid #D4231A; }
 
   .admin-body { padding: 16px; max-width: 600px; margin: 0 auto; }
 
-  .admin-stats {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .stat-card {
-    flex: 1;
-    background: #fff;
-    border-radius: 8px;
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #eee;
-  }
-
+  .admin-stats { display: flex; gap: 12px; margin-bottom: 20px; }
+  .stat-card { flex: 1; background: #fff; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #eee; }
   .stat-card .num { font-size: 28px; font-weight: 700; color: #006058; }
   .stat-card .lbl { font-size: 11px; color: #666; margin-top: 2px; }
 
-  .lead-card {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 12px;
-    border-left: 4px solid #006058;
-    background: #fff;
-  }
-
+  .lead-card { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #006058; background: #fff; }
   .lead-card .name { font-weight: 700; font-size: 15px; color: #006058; }
   .lead-card .company { font-size: 14px; color: #2D2D2D; margin-top: 2px; }
   .lead-card .details { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.6; }
+  .lead-card .lead-time { font-size: 10px; color: #aaa; margin-top: 4px; }
 
-  .checkbox-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: 400;
-    color: #2D2D2D;
-    padding: 6px 12px;
-    border: 1.5px solid #ddd;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
+    display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 400;
+    color: #2D2D2D; padding: 6px 12px; border: 1.5px solid #ddd; border-radius: 6px;
+    cursor: pointer; transition: all 0.2s;
   }
-
   .checkbox-label input { width: 16px; padding: 0; }
+  .checkbox-label:has(input:checked) { border-color: #006058; background: rgba(0,96,88,0.05); }
 
-  .checkbox-label:has(input:checked) {
-    border-color: #006058;
-    background: rgba(0,96,88,0.05);
+  .no-leads-msg { text-align: center; color: #999; padding: 40px 0; }
+
+  /* DANGER ZONE */
+  .danger-zone {
+    margin-top: 32px; padding: 16px; border: 2px solid #D4231A; border-radius: 8px; background: #fff;
   }
-
-  .no-leads-msg {
-    text-align: center;
-    color: #999;
-    padding: 40px 0;
+  .danger-zone h4 { color: #D4231A; font-size: 13px; margin-bottom: 8px; }
+  .danger-zone p { font-size: 11px; color: #666; margin-bottom: 12px; }
+  .danger-btn {
+    padding: 8px 16px; border-radius: 6px; border: 2px solid #D4231A;
+    background: transparent; color: #D4231A; font-size: 12px; font-weight: 600; cursor: pointer;
   }
 </style>
 </head>
 <body>
 
-<!-- HEADER — triple tap to open admin -->
 <div class="header" id="headerTap">
   <h1>FRONTIER BAKERY</h1>
   <p class="header-sub">Alimentaria 2026 — Pavilion 7, Stand E41</p>
 </div>
 
-<!-- FORM SECTION (buyer-facing) -->
+<!-- FORM -->
 <div class="form-container" id="formSection">
   <div class="lang-toggle" id="langToggle">
     <button class="lang-btn active" data-lang="en">English</button>
@@ -343,27 +172,22 @@
       <label class="required" id="lbl-name">Full Name</label>
       <input type="text" id="name" required autocomplete="name" placeholder="John Smith">
     </div>
-
     <div class="form-group">
       <label class="required" id="lbl-company">Company</label>
-      <input type="text" id="company" required autocomplete="organization" placeholder="">
+      <input type="text" id="company" required autocomplete="organization">
     </div>
-
     <div class="form-group">
       <label class="required" id="lbl-role">Job Title / Role</label>
       <input type="text" id="role" required placeholder="Category Manager">
     </div>
-
     <div class="form-group">
       <label class="required" id="lbl-email">Email</label>
       <input type="email" id="email" required autocomplete="email" placeholder="name@company.com">
     </div>
-
     <div class="form-group">
-      <label id="lbl-phone">Phone</label>
-      <input type="tel" id="phone" autocomplete="tel" placeholder="+34 600 000 000">
+      <label class="required" id="lbl-phone">Phone</label>
+      <input type="tel" id="phone" required autocomplete="tel" placeholder="+34 600 000 000">
     </div>
-
     <div class="form-group">
       <label class="required" id="lbl-country">Country</label>
       <select id="country" required>
@@ -390,7 +214,6 @@
         <option value="Other">Other</option>
       </select>
     </div>
-
     <div class="form-group">
       <label id="lbl-type">Company Type</label>
       <select id="companyType">
@@ -402,7 +225,6 @@
         <option value="Other">Other</option>
       </select>
     </div>
-
     <div class="form-group">
       <label id="lbl-products">Products of Interest</label>
       <div class="checkbox-group">
@@ -412,43 +234,48 @@
         <label class="checkbox-label"><input type="checkbox" value="Pani Puri"> Pani Puri</label>
         <label class="checkbox-label"><input type="checkbox" value="Specialty"> Specialty</label>
         <label class="checkbox-label"><input type="checkbox" value="Private Label"> Private Label</label>
+        <label class="checkbox-label"><input type="checkbox" value="Co-packing"> Co-packing</label>
+        <label class="checkbox-label"><input type="checkbox" value="Foodservice"> Foodservice</label>
+        <label class="checkbox-label"><input type="checkbox" value="Custom SKU"> Custom SKU</label>
+        <label class="checkbox-label"><input type="checkbox" value="Punjab Biscuit"> Punjab Biscuit</label>
       </div>
     </div>
-
     <div class="form-group">
       <label id="lbl-notes">Notes</label>
       <textarea id="notes" placeholder="Volume, timeline, specific requirements..."></textarea>
     </div>
-
     <button type="submit" class="submit-btn" id="btn-submit">Submit</button>
   </form>
 </div>
 
-<!-- SUCCESS MESSAGE -->
+<!-- SUCCESS + CATALOG DOWNLOAD -->
 <div class="success-msg" id="successSection">
   <div class="check">✓</div>
   <h2 id="msg-thanks">Thank You!</h2>
   <p id="msg-touch">We'll be in touch soon.</p>
+  <a class="catalog-btn" id="catalogLink" href="#" target="_blank" id="btn-catalog">
+    <span id="catalog-text">Download Our Product Catalog</span>
+  </a>
+  <p class="catalog-hint" id="catalog-hint">PDF with full product range, certifications & contact info</p>
   <button class="new-entry-btn" onclick="resetForm()" id="btn-next">Next Contact</button>
 </div>
 
 <!-- PIN OVERLAY -->
 <div class="pin-overlay" id="pinOverlay">
   <div class="pin-box">
-    <h3>Admin Access</h3>
+    <h3 id="pinTitle">Admin Access</h3>
     <input type="password" class="pin-input" id="pinInput" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••">
     <p class="pin-error" id="pinError">Wrong PIN</p>
     <button class="pin-cancel" onclick="closePin()">Cancel</button>
   </div>
 </div>
 
-<!-- ADMIN PANEL (hidden, PIN-protected) -->
+<!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">
     <h3 id="adminTitle">Leads</h3>
     <div class="admin-header-btns">
       <button class="admin-btn export-btn" onclick="exportCSV()">Export CSV</button>
-      <button class="admin-btn clear-btn" onclick="clearLeads()">Clear All</button>
       <button class="admin-btn close-admin-btn" onclick="closeAdmin()">Close</button>
     </div>
   </div>
@@ -468,12 +295,31 @@
       </div>
     </div>
     <div id="leadsDisplay"></div>
+
+    <!-- DANGER ZONE — bottom of admin, requires PIN re-entry -->
+    <div class="danger-zone">
+      <h4>Danger Zone</h4>
+      <p>Permanently delete all captured leads. Export your CSV first. This requires PIN re-entry.</p>
+      <button class="danger-btn" onclick="initClear()">Delete All Leads</button>
+    </div>
   </div>
 </div>
 
 <script>
-  // ===== PIN CONFIG =====
-  const ADMIN_PIN = '2026';  // Change this to your preferred PIN
+  const ADMIN_PIN = '2026';
+  const CATALOG_URL = 'https://yugmpatel0027.github.io/Booth/frontier_product_summary.pdf';
+
+  // ===== CATALOG LABELS PER LANGUAGE =====
+  const catalogLabels = {
+    en: { btn: 'Download Our Product Catalog', hint: 'PDF — full product range, certifications & contact info' },
+    es: { btn: 'Descargar Nuestro Catálogo', hint: 'PDF — gama completa de productos, certificaciones e información de contacto' },
+    fr: { btn: 'Télécharger Notre Catalogue', hint: 'PDF — gamme complète de produits, certifications et coordonnées' },
+    de: { btn: 'Unseren Produktkatalog Herunterladen', hint: 'PDF — vollständige Produktpalette, Zertifizierungen und Kontaktdaten' },
+    pt: { btn: 'Baixar Nosso Catálogo', hint: 'PDF — gama completa de produtos, certificações e contactos' },
+    it: { btn: 'Scarica il Nostro Catalogo', hint: 'PDF — gamma completa prodotti, certificazioni e contatti' },
+    nl: { btn: 'Download Onze Productcatalogus', hint: 'PDF — volledig productassortiment, certificeringen en contactgegevens' },
+    ar: { btn: 'تحميل كتالوج المنتجات', hint: 'PDF — مجموعة المنتجات الكاملة والشهادات ومعلومات الاتصال' },
+  };
 
   // ===== LANGUAGE DATA =====
   const L = {
@@ -488,13 +334,13 @@
   };
 
   let currentLang = 'en';
+  let pinCallback = null; // what to do after PIN is verified
 
-  // ===== LANGUAGE SWITCHING =====
+  // ===== LANGUAGE =====
   document.getElementById('langToggle').addEventListener('click', function(e) {
     const btn = e.target.closest('.lang-btn');
     if (!btn) return;
-    const lang = btn.dataset.lang;
-    setLang(lang);
+    setLang(btn.dataset.lang);
   });
 
   function setLang(lang) {
@@ -502,20 +348,12 @@
     const t = L[lang];
     if (!t) return;
 
-    // Toggle buttons
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
 
-    // RTL for Arabic
     const form = document.getElementById('leadForm');
-    if (lang === 'ar') {
-      form.style.direction = 'rtl';
-      form.style.textAlign = 'right';
-    } else {
-      form.style.direction = 'ltr';
-      form.style.textAlign = 'left';
-    }
+    form.style.direction = lang === 'ar' ? 'rtl' : 'ltr';
+    form.style.textAlign = lang === 'ar' ? 'right' : 'left';
 
-    // Labels
     document.getElementById('lbl-name').textContent = t.name;
     document.getElementById('lbl-company').textContent = t.company;
     document.getElementById('lbl-role').textContent = t.role;
@@ -532,34 +370,24 @@
     document.getElementById('opt-country-default').textContent = t.selCountry;
     document.getElementById('opt-type-default').textContent = t.selType;
 
-    // Re-add required asterisks
-    document.querySelectorAll('.required').forEach(el => {
-      if (!el.textContent.includes('*')) return;
-    });
-    ['lbl-name','lbl-company','lbl-role','lbl-email','lbl-country'].forEach(id => {
+    ['lbl-name','lbl-company','lbl-role','lbl-email','lbl-phone','lbl-country'].forEach(id => {
       document.getElementById(id).classList.add('required');
     });
 
-    // Placeholders
     document.getElementById('name').placeholder = t.phName;
     document.getElementById('role').placeholder = t.phRole;
     document.getElementById('notes').placeholder = t.phNotes;
   }
 
-  // ===== DATA STORAGE =====
+  // ===== DATA =====
   function getLeads() {
-    try { return JSON.parse(localStorage.getItem('frontier_leads') || '[]'); }
-    catch(e) { return []; }
+    try { return JSON.parse(localStorage.getItem('frontier_leads') || '[]'); } catch(e) { return []; }
   }
-
-  function saveLeads(leads) {
-    localStorage.setItem('frontier_leads', JSON.stringify(leads));
-  }
+  function saveLeads(leads) { localStorage.setItem('frontier_leads', JSON.stringify(leads)); }
 
   // ===== FORM SUBMIT =====
   function submitForm(e) {
     e.preventDefault();
-
     const products = [];
     document.querySelectorAll('.checkbox-group input:checked').forEach(cb => products.push(cb.value));
 
@@ -581,8 +409,18 @@
     leads.push(lead);
     saveLeads(leads);
 
+    // Set catalog button text in buyer's language
+    const cl = catalogLabels[currentLang] || catalogLabels.en;
+    document.getElementById('catalog-text').textContent = cl.btn;
+    document.getElementById('catalog-hint').textContent = cl.hint;
+    document.getElementById('catalogLink').href = CATALOG_URL;
+
+    // Set success page direction for Arabic
+    const successEl = document.getElementById('successSection');
+    successEl.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
+
     document.getElementById('formSection').style.display = 'none';
-    document.getElementById('successSection').style.display = 'block';
+    successEl.style.display = 'block';
   }
 
   function resetForm() {
@@ -590,27 +428,21 @@
     document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').style.display = 'none';
-    setLang('en');  // reset to English for next buyer
+    setLang('en');
   }
 
-  // ===== TRIPLE-TAP ADMIN ACCESS =====
-  let tapCount = 0;
-  let tapTimer = null;
-
+  // ===== TRIPLE-TAP ADMIN =====
+  let tapCount = 0, tapTimer = null;
   document.getElementById('headerTap').addEventListener('click', function() {
     tapCount++;
-    if (tapCount === 1) {
-      tapTimer = setTimeout(() => { tapCount = 0; }, 800);
-    }
-    if (tapCount >= 3) {
-      clearTimeout(tapTimer);
-      tapCount = 0;
-      openPin();
-    }
+    if (tapCount === 1) tapTimer = setTimeout(() => { tapCount = 0; }, 800);
+    if (tapCount >= 3) { clearTimeout(tapTimer); tapCount = 0; requestPin(openAdmin); }
   });
 
-  // ===== PIN ENTRY =====
-  function openPin() {
+  // ===== PIN SYSTEM (reusable for admin + delete) =====
+  function requestPin(callback, title) {
+    pinCallback = callback;
+    document.getElementById('pinTitle').textContent = title || 'Admin Access';
     document.getElementById('pinOverlay').style.display = 'flex';
     const inp = document.getElementById('pinInput');
     inp.value = '';
@@ -621,13 +453,15 @@
   function closePin() {
     document.getElementById('pinOverlay').style.display = 'none';
     document.getElementById('pinInput').value = '';
+    pinCallback = null;
   }
 
   document.getElementById('pinInput').addEventListener('input', function() {
     if (this.value.length === 4) {
       if (this.value === ADMIN_PIN) {
+        const cb = pinCallback;
         closePin();
-        openAdmin();
+        if (cb) cb();
       } else {
         document.getElementById('pinError').style.display = 'block';
         this.value = '';
@@ -636,21 +470,16 @@
     }
   });
 
-  // Close PIN on overlay click
   document.getElementById('pinOverlay').addEventListener('click', function(e) {
     if (e.target === this) closePin();
   });
 
-  // ===== ADMIN PANEL =====
+  // ===== ADMIN =====
   function openAdmin() {
-    const panel = document.getElementById('adminPanel');
-    panel.style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'block';
     renderAdmin();
   }
-
-  function closeAdmin() {
-    document.getElementById('adminPanel').style.display = 'none';
-  }
+  function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
 
   function renderAdmin() {
     const leads = getLeads();
@@ -669,8 +498,10 @@
       return;
     }
 
-    display.innerHTML = leads.slice().reverse().map(l => `
-      <div class="lead-card">
+    display.innerHTML = leads.slice().reverse().map(l => {
+      const d = new Date(l.timestamp);
+      const time = d.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+      return `<div class="lead-card">
         <div class="name">${esc(l.name)}</div>
         <div class="company">${esc(l.company)} — ${esc(l.role)}</div>
         <div class="details">
@@ -679,8 +510,9 @@
           ${l.products ? 'Products: ' + esc(l.products) : ''}
           ${l.notes ? '<br>Notes: ' + esc(l.notes) : ''}
         </div>
-      </div>
-    `).join('');
+        <div class="lead-time">${time}</div>
+      </div>`;
+    }).join('');
   }
 
   function esc(s) {
@@ -688,34 +520,30 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ===== EXPORT CSV =====
+  // ===== EXPORT =====
   function exportCSV() {
     const leads = getLeads();
     if (leads.length === 0) { alert('No leads to export'); return; }
-
     const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language'];
     const rows = leads.map(l => [
       l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language
     ].map(v => '"' + (v || '').replace(/"/g, '""') + '"'));
-
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'frontier_leads_alimentaria_' + new Date().toISOString().slice(0,10) + '.csv';
-    a.click();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = 'frontier_leads_alimentaria_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click(); URL.revokeObjectURL(url);
   }
 
-  // ===== CLEAR LEADS =====
-  function clearLeads() {
-    if (confirm('Delete ALL leads? This cannot be undone. Make sure you exported first.')) {
-      if (confirm('Are you really sure? This will permanently delete all captured data.')) {
-        localStorage.removeItem('frontier_leads');
-        renderAdmin();
-      }
-    }
+  // ===== DELETE — requires PIN re-entry =====
+  function initClear() {
+    if (!confirm('This will permanently delete ALL leads. Have you exported the CSV?')) return;
+    closeAdmin();
+    requestPin(function() {
+      localStorage.removeItem('frontier_leads');
+      openAdmin(); // re-open admin to show empty state
+    }, 'Re-enter PIN to Delete');
   }
 </script>
 </body>
