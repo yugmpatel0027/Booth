@@ -77,6 +77,10 @@
       <input type="email" id="qEmail" required placeholder="name@company.com" autocomplete="email">
     </div>
     <div class="field">
+      <label id="lbl-p">Phone</label>
+      <input type="tel" id="qPhone" required placeholder="+34 600 000 000" autocomplete="tel">
+    </div>
+    <div class="field">
       <label id="lbl-c">Company</label>
       <input type="text" id="qCompany" placeholder="Company name" autocomplete="organization">
     </div>
@@ -92,10 +96,10 @@
 
 <script>
   const QL = {
-    en: { intro: 'Stay Connected', sub: "Leave your details and we'll send you our product catalog", name: 'Name', email: 'Email', company: 'Company', btn: 'Connect', thanks: 'Thank You!', msg: "We'll be in touch with our product catalog.", ph_n: 'Your name', ph_c: 'Company name' },
-    es: { intro: 'Mantente Conectado', sub: 'Déjanos tus datos y te enviaremos nuestro catálogo', name: 'Nombre', email: 'Correo', company: 'Empresa', btn: 'Conectar', thanks: '¡Gracias!', msg: 'Te enviaremos nuestro catálogo de productos.', ph_n: 'Tu nombre', ph_c: 'Nombre de empresa' },
-    fr: { intro: 'Restons Connectés', sub: 'Laissez vos coordonnées et nous vous enverrons notre catalogue', name: 'Nom', email: 'Email', company: 'Entreprise', btn: 'Connecter', thanks: 'Merci !', msg: 'Nous vous enverrons notre catalogue produits.', ph_n: 'Votre nom', ph_c: "Nom d'entreprise" },
-    de: { intro: 'Bleiben Sie Verbunden', sub: 'Hinterlassen Sie Ihre Daten und wir senden Ihnen unseren Katalog', name: 'Name', email: 'E-Mail', company: 'Unternehmen', btn: 'Verbinden', thanks: 'Vielen Dank!', msg: 'Wir senden Ihnen unseren Produktkatalog.', ph_n: 'Ihr Name', ph_c: 'Firmenname' },
+    en: { intro: 'Stay Connected', sub: "Leave your details and we'll send you our product catalog", name: 'Name', email: 'Email', phone: 'Phone', company: 'Company', btn: 'Connect', thanks: 'Thank You!', msg: "We'll be in touch with our product catalog.", ph_n: 'Your name', ph_c: 'Company name' },
+    es: { intro: 'Mantente Conectado', sub: 'Déjanos tus datos y te enviaremos nuestro catálogo', name: 'Nombre', email: 'Correo', phone: 'Teléfono', company: 'Empresa', btn: 'Conectar', thanks: '¡Gracias!', msg: 'Te enviaremos nuestro catálogo de productos.', ph_n: 'Tu nombre', ph_c: 'Nombre de empresa' },
+    fr: { intro: 'Restons Connectés', sub: 'Laissez vos coordonnées et nous vous enverrons notre catalogue', name: 'Nom', email: 'Email', phone: 'Téléphone', company: 'Entreprise', btn: 'Connecter', thanks: 'Merci !', msg: 'Nous vous enverrons notre catalogue produits.', ph_n: 'Votre nom', ph_c: "Nom d'entreprise" },
+    de: { intro: 'Bleiben Sie Verbunden', sub: 'Hinterlassen Sie Ihre Daten und wir senden Ihnen unseren Katalog', name: 'Name', email: 'E-Mail', phone: 'Telefon', company: 'Unternehmen', btn: 'Verbinden', thanks: 'Vielen Dank!', msg: 'Wir senden Ihnen unseren Produktkatalog.', ph_n: 'Ihr Name', ph_c: 'Firmenname' },
   };
 
   let qLang = 'en';
@@ -110,6 +114,7 @@
     document.getElementById('introSub').textContent = t.sub;
     document.getElementById('lbl-n').textContent = t.name;
     document.getElementById('lbl-e').textContent = t.email;
+    document.getElementById('lbl-p').textContent = t.phone;
     document.getElementById('lbl-c').textContent = t.company;
     document.getElementById('btnSub').textContent = t.btn;
     document.getElementById('qName').placeholder = t.ph_n;
@@ -122,6 +127,7 @@
       timestamp: new Date().toISOString(),
       name: document.getElementById('qName').value.trim(),
       email: document.getElementById('qEmail').value.trim(),
+      phone: document.getElementById('qPhone').value.trim(),
       company: document.getElementById('qCompany').value.trim(),
       source: 'qr-passby',
       language: qLang
