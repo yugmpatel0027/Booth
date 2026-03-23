@@ -446,10 +446,15 @@
     <div class="admin-header-btns">
       <button class="admin-btn quick-toggle" id="quickToggleBtn" onclick="toggleQuickMode()">Quick Mode</button>
       <button class="admin-btn export-btn" onclick="exportCSV()">Export CSV</button>
+      <button class="admin-btn" onclick="configSheet()" style="background:#F2C800;color:#2D2D2D;">Sheet</button>
       <button class="admin-btn close-admin-btn" onclick="closeAdmin()">Close</button>
     </div>
   </div>
   <div class="admin-body">
+    <!-- Sheet URL config banner -->
+    <div id="sheetBanner" style="display:none; background:#006058; color:#F8F7F4; padding:12px 16px; border-radius:8px; margin-bottom:12px; font-size:13px;">
+      ✓ Google Sheet connected — leads sync automatically
+    </div>
     <div class="admin-stats" id="adminStats">
       <div class="stat-card">
         <div class="num" id="statTotal">0</div>
@@ -653,6 +658,23 @@
     document.getElementById('cardViewer').style.display = 'flex';
   }
 
+  // ===== GOOGLE SHEET BACKEND =====
+  // Google Apps Script Web App URL — all leads sync here automatically
+  const SHEET_URL = localStorage.getItem('frontier_sheet_url') || 'https://script.google.com/macros/s/AKfycbzkS44zKtNL7UizVrHhjSTul4Qg3ziqppJ1obcwxe-uGnHTDLaKy4bhM4xpSiyGNB-Mjw/exec';
+
+  function postToSheet(leadData) {
+    if (!SHEET_URL) return; // skip if not configured
+    const payload = { ...leadData };
+    delete payload.cardImage; // don't send base64 images to Sheet
+    delete payload.voiceMemo; // don't send audio blobs
+    fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(err => console.log('Sheet sync failed:', err));
+  }
+
   // ===== DATA =====
   function getLeads() {
     try { return JSON.parse(localStorage.getItem('frontier_leads') || '[]'); } catch(e) { return []; }
@@ -828,6 +850,7 @@
     const leads = getLeads();
     leads.push(lead);
     saveLeads(leads);
+    postToSheet(lead);
     lastLeadIndex = leads.length - 1;
 
     const successEl = document.getElementById('successSection');
@@ -869,6 +892,8 @@
           leads[lastLeadIndex].voiceMemo = await blobToBase64(voiceBlob);
         }
         saveLeads(leads);
+        // Update rating in Google Sheet
+        postToSheet({ ...leads[lastLeadIndex], _update: true });
       }
     }
     voiceBlob = null;
@@ -967,9 +992,30 @@
     const btn = document.getElementById('quickToggleBtn');
     btn.textContent = quickMode ? 'Full Mode' : 'Quick Mode';
     btn.classList.toggle('on', quickMode);
+    updateSheetBanner();
     renderAdmin();
   }
   function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
+
+  function configSheet() {
+    const current = localStorage.getItem('frontier_sheet_url') || '';
+    const url = prompt('Paste your Google Apps Script Web App URL:\n(Leave blank to disconnect)', current);
+    if (url === null) return; // cancelled
+    if (url.trim()) {
+      localStorage.setItem('frontier_sheet_url', url.trim());
+      // Update the live variable
+      window.location.reload();
+    } else {
+      localStorage.removeItem('frontier_sheet_url');
+      window.location.reload();
+    }
+  }
+
+  // Show sheet status banner on admin open
+  function updateSheetBanner() {
+    const banner = document.getElementById('sheetBanner');
+    if (banner) banner.style.display = SHEET_URL ? 'block' : 'none';
+  }
 
   function renderAdmin() {
     const leads = getLeads();

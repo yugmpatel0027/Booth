@@ -104,6 +104,17 @@
 
   let qLang = 'en';
 
+  // Google Sheet backend — same URL as main form
+  const SHEET_URL = localStorage.getItem('frontier_sheet_url') || 'https://script.google.com/macros/s/AKfycbzkS44zKtNL7UizVrHhjSTul4Qg3ziqppJ1obcwxe-uGnHTDLaKy4bhM4xpSiyGNB-Mjw/exec';
+  function postToSheet(data) {
+    if (!SHEET_URL) return;
+    fetch(SHEET_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).catch(err => console.log('Sheet sync failed:', err));
+  }
+
   document.getElementById('langRow').addEventListener('click', function(e) {
     const btn = e.target.closest('.lang-btn');
     if (!btn) return;
@@ -138,6 +149,9 @@
     try { leads = JSON.parse(localStorage.getItem('frontier_leads') || '[]'); } catch(e) {}
     leads.push(lead);
     localStorage.setItem('frontier_leads', JSON.stringify(leads));
+
+    // Also send to Google Sheet if configured
+    postToSheet(lead);
 
     const t = QL[qLang] || QL.en;
     document.getElementById('msgThanks').textContent = t.thanks;
