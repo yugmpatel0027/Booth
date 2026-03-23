@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Frontier Bakery — Alimentaria 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:#F8F7F4;color:#2D2D2D;min-height:100vh}
+
+  /* HEADER */
+  .header{background:linear-gradient(135deg,#006058 0%,#004d47 100%);padding:24px 20px 20px;text-align:center;position:relative;overflow:hidden}
+  .header::after{content:'';position:absolute;bottom:-20px;left:-5%;width:110%;height:40px;background:#F8F7F4;border-radius:50%}
+  .badge{display:inline-block;background:#D4231A;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;margin-bottom:10px;letter-spacing:.5px}
+  .header h1{color:#F2C800;font-size:22px;font-weight:800;letter-spacing:.5px}
+  .header .sub{color:#F8F7F4;font-size:12px;margin-top:3px;opacity:.85}
+  .contact-row{display:flex;justify-content:center;gap:16px;margin-top:12px}
+  .contact-row a{color:#F2C800;font-size:12px;text-decoration:none;display:flex;align-items:center;gap:4px;opacity:.9}
+
+  /* QUICK ACTIONS */
+  .quick-actions{display:flex;gap:8px;padding:16px 16px 8px;max-width:480px;margin:0 auto}
+  .qa-btn{flex:1;padding:10px 6px;border-radius:10px;border:none;font-size:11px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:inherit}
+  .qa-btn .icon{font-size:18px}
+  .qa-btn.email{background:#006058;color:#F2C800}
+  .qa-btn.call{background:#F2C800;color:#2D2D2D}
+  .qa-btn.web{background:#2D2D2D;color:#F8F7F4}
+
+  /* FORM */
+  .form-wrap{padding:8px 16px 40px;max-width:480px;margin:0 auto}
+  .section-label{text-align:center;margin:12px 0 14px}
+  .section-label h2{color:#006058;font-size:15px;font-weight:700}
+  .section-label p{color:#888;font-size:12px;margin-top:2px}
+
+  .field{margin-bottom:11px;position:relative}
+  .field label{display:block;font-size:12px;font-weight:600;color:#006058;margin-bottom:3px}
+  .field label .req{color:#D4231A;margin-left:2px}
+  .field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:8px;font-size:16px;font-family:'Inter',sans-serif;background:#fff;-webkit-appearance:none;transition:border-color .2s}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#006058;box-shadow:0 0 0 3px rgba(0,96,88,.1)}
+  .field input.error,.field textarea.error,.field select.error{border-color:#D4231A;box-shadow:0 0 0 3px rgba(212,35,26,.1)}
+  .field .err-msg{color:#D4231A;font-size:11px;margin-top:3px;display:none}
+  .field.has-error .err-msg{display:block}
+  .field textarea{height:65px;resize:none}
+  .field select{color:#2D2D2D}
+
+  /* CARD SNAP */
+  .snap-btn{width:100%;padding:14px;background:#F2C800;color:#2D2D2D;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+  .snap-btn.snapped{background:#006058;color:#F2C800}
+  .preview-wrap{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .preview-img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #006058;cursor:pointer}
+
+  /* RATING */
+  .rating-row{display:flex;gap:8px;margin-bottom:11px}
+  .rate-btn{flex:1;padding:10px;border:2px solid #ddd;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;text-align:center;transition:all .15s}
+  .rate-btn.hot{border-color:#D4231A;color:#D4231A}
+  .rate-btn.warm{border-color:#F2C800;color:#996600}
+  .rate-btn.cold{border-color:#006058;color:#006058}
+  .rate-btn.hot.sel{background:#D4231A;color:#fff}
+  .rate-btn.warm.sel{background:#F2C800;color:#2D2D2D}
+  .rate-btn.cold.sel{background:#006058;color:#fff}
+
+  /* SUBMIT */
+  .submit-btn{width:100%;padding:15px;background:#006058;color:#F2C800;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .2s}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* STATUS BANNER */
+  .status-bar{display:none;padding:10px 16px;text-align:center;font-size:13px;font-weight:600}
+  .status-bar.scanning{background:#006058;color:#F2C800;animation:pulse 1.5s infinite;display:block}
+  .status-bar.done{background:#2D8C3C;color:#fff;display:block}
+  .status-bar.error{background:#D4231A;color:#fff;display:block}
+  .status-bar.saving{background:#006058;color:#F2C800;animation:pulse 1.5s infinite;display:block}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
+  /* COUNTER */
+  .counter{text-align:center;padding:6px;background:#006058;color:#F2C800;font-size:12px;font-weight:600;display:none}
+
+  /* SUCCESS */
+  .success{display:none;text-align:center;padding:48px 24px}
+  .success .check{width:64px;height:64px;background:#006058;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:30px;color:#F2C800}
+  .success h2{color:#006058;font-size:22px;font-weight:800;margin-bottom:6px}
+  .success p{color:#666;font-size:14px;margin-bottom:24px;line-height:1.5}
+  .next-btn{padding:13px 36px;background:#006058;color:#F2C800;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- HEADER / DIGITAL CARD -->
+<div class="header">
+  <div class="badge">ALIMENTARIA 2026 · HALL 7 · STAND E41</div>
+  <h1>FRONTIER BAKERY</h1>
+  <div class="sub">Yugm Patel — Business Development</div>
+  <div class="contact-row">
+    <a href="mailto:yugm.patel@3amanagementcorp.com">✉ Email</a>
+    <a href="tel:+16479869846">📱 +1 647 986 9846</a>
+    <a href="https://frontierbakery.ca" target="_blank">🌐 Website</a>
+  </div>
+</div>
+
+<div id="statusBar" class="status-bar"></div>
+<div id="counterBar" class="counter">Contacts logged today: <span id="leadCount">0</span></div>
+
+<!-- QUICK CONTACT ACTIONS -->
+<div class="quick-actions">
+  <a class="qa-btn email" href="mailto:yugm.patel@3amanagementcorp.com"><span class="icon">✉</span>Email</a>
+  <a class="qa-btn call" href="tel:+16479869846"><span class="icon">📞</span>Call</a>
+  <a class="qa-btn web" href="https://frontierbakery.ca" target="_blank"><span class="icon">🌐</span>Website</a>
+</div>
+
+<!-- LEAD FORM -->
+<div id="formWrap" class="form-wrap">
+  <div class="section-label">
+    <h2>Stay Connected</h2>
+    <p>Snap your card — fields fill automatically</p>
+  </div>
+
+  <!-- CARD PHOTO -->
+  <button class="snap-btn" id="snapBtn" onclick="takePhoto()">
+    📸 Snap Business Card (auto-fills form)
+  </button>
+  <div class="preview-wrap" id="previewWrap"></div>
+
+  <!-- REQUIRED FIELDS -->
+  <div class="field" id="fieldName">
+    <label>Full Name <span class="req">*</span></label>
+    <input type="text" id="fName" placeholder="Auto-fills from card" autocomplete="name">
+    <div class="err-msg">Name is required</div>
+  </div>
+  <div class="field" id="fieldCompany">
+    <label>Company <span class="req">*</span></label>
+    <input type="text" id="fCompany" placeholder="Auto-fills from card" autocomplete="organization">
+    <div class="err-msg">Company is required</div>
+  </div>
+  <div class="field" id="fieldEmail">
+    <label>Email <span class="req">*</span></label>
+    <input type="email" id="fEmail" placeholder="Auto-fills from card" autocomplete="email">
+    <div class="err-msg">A valid email is required</div>
+  </div>
+  <div class="field" id="fieldPhone">
+    <label>Phone <span class="req">*</span></label>
+    <input type="tel" id="fPhone" placeholder="Auto-fills from card" autocomplete="tel">
+    <div class="err-msg">Phone is required</div>
+  </div>
+
+  <!-- OPTIONAL FIELDS -->
+  <div class="field">
+    <label>Role / Title</label>
+    <input type="text" id="fRole" placeholder="Auto-fills from card">
+  </div>
+  <div class="field">
+    <label>Country</label>
+    <select id="fCountry">
+      <option value="">Select...</option>
+      <option>Spain</option><option>France</option><option>Germany</option>
+      <option>Italy</option><option>Portugal</option><option>Netherlands</option>
+      <option>Belgium</option><option>UK</option><option>USA</option>
+      <option>Canada</option><option>Other</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Company Type</label>
+    <select id="fType">
+      <option value="">Select...</option>
+      <option>Retailer</option><option>Distributor</option><option>Wholesaler</option>
+      <option>Food Service</option><option>Manufacturer</option><option>Broker</option><option>Other</option>
+    </select>
+  </div>
+
+  <!-- RATING -->
+  <div class="rating-row">
+    <button class="rate-btn hot" onclick="setRating('hot',this)">🔥 Hot</button>
+    <button class="rate-btn warm" onclick="setRating('warm',this)">☀️ Warm</button>
+    <button class="rate-btn cold" onclick="setRating('cold',this)">❄️ Cold</button>
+  </div>
+
+  <div class="field">
+    <label>Notes</label>
+    <textarea id="fNotes" placeholder="What did you discuss? Products of interest, next steps..."></textarea>
+  </div>
+
+  <button class="submit-btn" id="submitBtn" onclick="submitLead()">Save Contact →</button>
+</div>
+
+<!-- SUCCESS -->
+<div class="success" id="successSection">
+  <div class="check">✓</div>
+  <h2>You're in!</h2>
+  <p id="successMsg">Contact saved. You'll receive a follow-up from the Frontier Bakery team shortly.</p>
+  <button class="next-btn" onclick="resetForm()">Log Another Contact</button>
+</div>
+
+<!-- Hidden inputs -->
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none">
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzkS44zKtNL7UizVrHhjSTul4Qg3ziqppJ1obcwxe-uGnHTDLaKy4bhM4xpSiyGNB-Mjw/exec';
+
+let cardPhoto = null;
+let currentRating = '';
+let leadCount = parseInt(localStorage.getItem('frontier_leads_count') || '0');
+updateCounter();
+
+function updateCounter() {
+  if (leadCount > 0) {
+    document.getElementById('counterBar').style.display = 'block';
+    document.getElementById('leadCount').textContent = leadCount;
+  }
+}
+
+// ===== STATUS BANNER =====
+function showStatus(msg, type) {
+  const bar = document.getElementById('statusBar');
+  bar.textContent = msg;
+  bar.className = 'status-bar ' + type;
+}
+function hideStatus() {
+  document.getElementById('statusBar').className = 'status-bar';
+  document.getElementById('statusBar').style.display = 'none';
+}
+
+// ===== RATING =====
+function setRating(val, btn) {
+  currentRating = val;
+  document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+// ===== OCR =====
+async function ocrCard(dataUrl) {
+  showStatus('Scanning card...', 'scanning');
+  try {
+    const result = await Tesseract.recognize(dataUrl, 'eng+spa', {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          showStatus('Reading card... ' + Math.round((m.progress||0)*100) + '%', 'scanning');
+        }
+      }
+    });
+    const parsed = parseCard(result.data.text);
+    fillForm(parsed);
+    showStatus('✓ Card scanned — check fields below', 'done');
+    setTimeout(hideStatus, 3000);
+  } catch(e) {
+    showStatus('Could not read card — please fill in manually', 'error');
+    setTimeout(hideStatus, 3000);
+  }
+}
+
+function parseCard(text) {
+  const lines = text.split('\n').map(l=>l.trim()).filter(l=>l.length>1);
+  const out = {name:'',company:'',email:'',phone:'',role:''};
+  const emailM = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+  if (emailM) out.email = emailM[0].toLowerCase();
+  const phoneM = text.match(/[\+]?[\d\s\-\(\)\.]{7,20}/);
+  if (phoneM) {
+    const c = phoneM[0].trim();
+    if (c.replace(/\D/g,'').length >= 7) out.phone = c;
+  }
+  const roleRx = /\b(director|manager|buyer|purchasing|CEO|CFO|COO|CTO|VP|president|head|chief|gerente|responsable|jefe|compras|comercial|sales|export|import|business development|account|category|procurement|supply chain|logistics|marketing|founder|owner|partner|asociado|executive|consultant)\b/i;
+  const noiseRx = /^(tel|fax|mob|mobile|phone|email|e-mail|web|www|http|address|dir|office)[\s:\.]/i;
+  const urlM = text.match(/(?:www\.)?[a-zA-Z0-9\-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?/gi);
+  const cands = lines.filter(l => {
+    if (l.includes('@')) return false;
+    if (/^[\+\d\s\-\(\)\.]{7,}$/.test(l)) return false;
+    if (/^www\.|^http/i.test(l)) return false;
+    if (noiseRx.test(l)) return false;
+    if (/^\d{3,}/.test(l)) return false;
+    return true;
+  });
+  for (const l of cands) {
+    if (roleRx.test(l)) { out.role = l; break; }
+  }
+  const rest = cands.filter(l => l !== out.role);
+  if (rest[0]) out.name = rest[0];
+  if (rest[1]) out.company = rest[1];
+  if (!out.company && urlM) {
+    const d = urlM[0].replace(/^www\./i,'').split('.')[0];
+    out.company = d.charAt(0).toUpperCase() + d.slice(1);
+  }
+  return out;
+}
+
+function fillForm(d) {
+  if (!d) return;
+  if (d.name) document.getElementById('fName').value = d.name;
+  if (d.company) document.getElementById('fCompany').value = d.company;
+  if (d.email) document.getElementById('fEmail').value = d.email;
+  if (d.phone) document.getElementById('fPhone').value = d.phone;
+  if (d.role) document.getElementById('fRole').value = d.role;
+  // Clear errors on auto-filled fields
+  ['fieldName','fieldCompany','fieldEmail','fieldPhone'].forEach(id => {
+    document.getElementById(id).classList.remove('has-error');
+    document.getElementById(id).querySelector('input').classList.remove('error');
+  });
+}
+
+// ===== IMAGE =====
+function compressImage(dataUrl, maxW) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const r = Math.min(maxW/img.width, 1);
+      canvas.width = img.width * r;
+      canvas.height = img.height * r;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = dataUrl;
+  });
+}
+
+function takePhoto() {
+  document.getElementById('cameraInput').click();
+}
+
+document.getElementById('cameraInput').addEventListener('change', async function(e) {
+  if (!e.target.files.length) return;
+  const reader = new FileReader();
+  reader.onload = async function(ev) {
+    cardPhoto = ev.target.result;
+    // Show preview
+    document.getElementById('previewWrap').innerHTML =
+      '<img class="preview-img" src="' + cardPhoto + '" onclick="removePhoto()">';
+    const btn = document.getElementById('snapBtn');
+    btn.textContent = '✓ Card captured — tap to retake';
+    btn.classList.add('snapped');
+    await ocrCard(cardPhoto);
+  };
+  reader.readAsDataURL(e.target.files[0]);
+  e.target.value = '';
+});
+
+function removePhoto() {
+  cardPhoto = null;
+  document.getElementById('previewWrap').innerHTML = '';
+  const btn = document.getElementById('snapBtn');
+  btn.innerHTML = '📸 Snap Business Card (auto-fills form)';
+  btn.classList.remove('snapped');
+}
+
+// ===== VALIDATION =====
+function validate() {
+  let ok = true;
+  const checks = [
+    { id: 'fieldName', input: 'fName', check: v => v.trim().length > 0 },
+    { id: 'fieldCompany', input: 'fCompany', check: v => v.trim().length > 0 },
+    { id: 'fieldEmail', input: 'fEmail', check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    { id: 'fieldPhone', input: 'fPhone', check: v => v.trim().length >= 6 }
+  ];
+  checks.forEach(({id, input, check}) => {
+    const val = document.getElementById(input).value;
+    const field = document.getElementById(id);
+    const inp = document.getElementById(input);
+    if (!check(val)) {
+      field.classList.add('has-error');
+      inp.classList.add('error');
+      ok = false;
+    } else {
+      field.classList.remove('has-error');
+      inp.classList.remove('error');
+    }
+  });
+  if (!ok) {
+    document.querySelector('.has-error input, .has-error textarea')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return ok;
+}
+
+// ===== SUBMIT =====
+async function submitLead() {
+  if (!validate()) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  showStatus('Saving contact...', 'saving');
+
+  let cardImageBase64 = '';
+  if (cardPhoto) {
+    try {
+      const compressed = await compressImage(cardPhoto, 800);
+      cardImageBase64 = compressed.split(',')[1];
+    } catch(e) {}
+  }
+
+  const lead = {
+    timestamp: new Date().toISOString(),
+    name: document.getElementById('fName').value.trim(),
+    company: document.getElementById('fCompany').value.trim(),
+    role: document.getElementById('fRole').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    phone: document.getElementById('fPhone').value.trim(),
+    country: document.getElementById('fCountry').value,
+    companyType: document.getElementById('fType').value,
+    notes: document.getElementById('fNotes').value.trim(),
+    rating: currentRating,
+    source: 'alimentaria-2026',
+    cardImage: cardImageBase64
+  };
+
+  // localStorage backup (no image)
+  try {
+    const saved = JSON.parse(localStorage.getItem('frontier_leads') || '[]');
+    const backup = {...lead}; delete backup.cardImage;
+    saved.push(backup);
+    localStorage.setItem('frontier_leads', JSON.stringify(saved));
+  } catch(e) {}
+
+  // POST to Google Sheet
+  fetch(SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(lead)
+  }).catch(()=>{});
+
+  leadCount++;
+  localStorage.setItem('frontier_leads_count', leadCount);
+  updateCounter();
+
+  showSuccess(lead.name);
+}
+
+function showSuccess(name) {
+  document.getElementById('formWrap').style.display = 'none';
+  const s = document.getElementById('successSection');
+  s.style.display = 'block';
+  document.getElementById('statusBar').className = 'status-bar';
+  document.getElementById('successMsg').textContent =
+    'Thanks ' + name.split(' ')[0] + '! You\'ll hear from the Frontier Bakery team soon.';
+}
+
+function resetForm() {
+  document.getElementById('formWrap').style.display = 'block';
+  document.getElementById('successSection').style.display = 'none';
+  document.getElementById('submitBtn').disabled = false;
+  document.querySelectorAll('input,textarea,select').forEach(el => {
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+  document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
+  document.querySelectorAll('input.error,textarea.error').forEach(el => el.classList.remove('error'));
+  currentRating = '';
+  cardPhoto = null;
+  document.getElementById('previewWrap').innerHTML = '';
+  const btn = document.getElementById('snapBtn');
+  btn.innerHTML = '📸 Snap Business Card (auto-fills form)';
+  btn.classList.remove('snapped');
+  hideStatus();
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
