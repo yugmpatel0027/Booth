@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 1 Leads — Alimentaria 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',sans-serif;background:#F8F7F4;color:#2D2D2D;padding:20px;max-width:600px;margin:0 auto}
+  .header{background:linear-gradient(135deg,#006058 0%,#004d47 100%);color:#F2C800;padding:20px;border-radius:12px;text-align:center;margin-bottom:16px}
+  .header h1{font-size:20px;font-weight:800;margin-bottom:2px}
+  .header .sub{font-size:12px;color:#F8F7F4;opacity:.85}
+  .header .count{font-size:28px;font-weight:800;margin-top:8px}
+  .contact{padding:10px 14px;margin-bottom:5px;border-radius:8px;border-left:4px solid #ccc;background:#fff;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+  .contact.hot{border-left-color:#D4231A}
+  .contact.warm{border-left-color:#F2C800}
+  .contact.cold{border-left-color:#006058}
+  .contact .co{font-weight:700;font-size:13px}
+  .contact .detail{color:#666;font-size:11px;margin-top:1px}
+  .contact .status{font-size:11px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+  .status.pending{background:#eee;color:#666}
+  .status.sending{background:#006058;color:#F2C800;animation:pulse 1s infinite}
+  .status.done{background:#2D8C3C;color:#fff}
+  .status.fail{background:#D4231A;color:#fff}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  .btn{width:100%;padding:16px;background:#006058;color:#F2C800;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;margin:12px 0}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .summary{text-align:center;padding:10px;font-size:14px;font-weight:600;color:#006058}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>ALIMENTARIA 2026</h1>
+  <div class="sub">Day 1 — Monday, March 23</div>
+  <div class="count" id="totalCount">18</div>
+  <div class="sub">contacts collected</div>
+</div>
+
+<div id="summary" class="summary">Ready to upload</div>
+<button class="btn" id="uploadBtn" onclick="startUpload()">Upload Day 1 Leads to Google Sheet</button>
+
+<div id="contactList"></div>
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzkS44zKtNL7UizVrHhjSTul4Qg3ziqppJ1obcwxe-uGnHTDLaKy4bhM4xpSiyGNB-Mjw/exec';
+
+const contacts = [
+  {name:"Antonia Soriano López",company:"Angel Linares",role:"Resp. de Producto",email:"producto@angellinares.com",phone:"+34 673 06 76 59",country:"Spain",companyType:"Other",notes:"Panadería - Confitería - HORECA. Lorca, Murcia. www.angellinares.com. Tel: +34 968 47 63 02. Interested in ALL products.",rating:"hot"},
+  {name:"Alicia Villarreal",company:"BDM Bakery / HEB Mexico",role:"Bakery Buyer",email:"avillarreal@hebmex.com",phone:"8115442464",country:"Other",companyType:"Retailer",notes:"HEB Mexico. VERY interested in naan, naan bites, mini pita. Bakery buyer for 86 stores.",rating:"hot"},
+  {name:"Lmostafa Allam",company:"Broasters Fried Chicken Solutions",role:"Inhaber (Owner)",email:"allam@broasters-chicken.de",phone:"0179-7205768",country:"Germany",companyType:"Food Service",notes:"Fried chicken restaurant owner. Gelsenkirchen. Tel: 0209-17163456.",rating:"warm"},
+  {name:"César García",company:"Carrefour Spain",role:"Buyer",email:"cesar.garcia@carrefour.com",phone:"",country:"Spain",companyType:"Retailer",notes:"Interested in full range — especially Naan Bites. Todos pero Naan Bites.",rating:"hot"},
+  {name:"Javier Alejandro Vallejo",company:"Fira Barcelona / GastroFira",role:"Catering Service Supervisor",email:"jvallejo@firabarcelona.com",phone:"+34 669 794 997",country:"Spain",companyType:"Food Service",notes:"Interested in catering supply for Fira Barcelona events. Tel: +34 93 233 41 77.",rating:"hot"},
+  {name:"Albert Pladevall Cortés",company:"Fira Barcelona / Gastrofira",role:"Catering Purchasing & Warehouse Supervisor",email:"apladevall@firabarcelona.com",phone:"+34 618 134 221",country:"Spain",companyType:"Food Service",notes:"Purchasing supervisor for Fira catering. Tel: +34 93 233 42 30. Pair with Javier.",rating:"hot"},
+  {name:"Laura Bensadoun",company:"Fresh Food Village",role:"Directrice Générale (CEO)",email:"l.bensadoun@freshfoodvillage.com",phone:"+33 6 74 90 50 82",country:"France",companyType:"Retailer",notes:"CEO. Premium Paris location (8th arr). www.freshfoodvillage.com.",rating:"hot"},
+  {name:"Vasilis Basiouras",company:"Global Foods Greece",role:"Purchasing Department",email:"commercial@globalfoods.gr",phone:"+30 694 169 9699",country:"Other",companyType:"Distributor",notes:"Also runs Unique Goods + Meat Wise. Tel: +30 211 740 1250. www.globalfoods.gr. LOVED all products. 90% foodservice, now moving into retail.",rating:"hot"},
+  {name:"Anuj Kumar Lamba",company:"Global Foods Trading Spain (GFT)",role:"Director",email:"anuj.lamba@gft.group",phone:"+34 677 534 870",country:"Spain",companyType:"Distributor",notes:"Food trading near Barcelona. www.gft.group. Landline: +34 93 264 15 36.",rating:"hot"},
+  {name:"Michel Conde",company:"Granier (Pan Granier)",role:"",email:"michel.conde@pangranier.com",phone:"",country:"Spain",companyType:"Retailer",notes:"Major Spanish bakery franchise chain (700+ locations). High-volume potential.",rating:"hot"},
+  {name:"Samuel Gecchele",company:"Il Fornaio del Casale S.p.A.",role:"Purchasing Contact",email:"fatturazione@pec.ilfornaiodelcasale.it",phone:"+39 0422 788053",country:"Italy",companyType:"Manufacturer",notes:"Met with Marco. Samuel is purchasing contact. Want samples. At the show — want to stop by our booth. www.gecchele.com.",rating:"hot"},
+  {name:"Andreu Vedo Olegario",company:"LloparTec",role:"Sales Technician",email:"andreuvedo@llopartec.com",phone:"+34 683 142 967",country:"Spain",companyType:"Other",notes:"Smart food solutions. Barcelona area. Tel: +34 93 897 07 36.",rating:"cold"},
+  {name:"Hervé Medina",company:"Nicolás y Valero",role:"Asesor gastronómico",email:"herve@nicolasyvalero.es",phone:"+34 678 408 617",country:"Spain",companyType:"Distributor",notes:"Interested in pani puri, naan, roti. Murcia. nicolasyvalero.es. Tel: 968 863 034.",rating:"hot"},
+  {name:"Pastisseria Ramirez",company:"Pastisseria Ramirez",role:"",email:"pastisseriajr@gmail.com",phone:"685810051",country:"Spain",companyType:"Other",notes:"Traditional artisan pastry shop since 1971. Tel: 937691341. www.pastisseriajramirez.es.",rating:"cold"},
+  {name:"Nishank Popat",company:"Popat Store",role:"",email:"nishank@popatstore.pt",phone:"+351 935 350 088",country:"Portugal",companyType:"Retailer",notes:"Ethnic grocery + warehouse in Lisbon. www.popatstore.pt.",rating:"warm"},
+  {name:"Cristina Poveda",company:"Restaurante Queen",role:"",email:"info@queenzdinnershow.com",phone:"+34 675 447 321",country:"Spain",companyType:"Food Service",notes:"Restaurant in Sitges. Very interested in pani puri and mini naan.",rating:"warm"},
+  {name:"Margarita Amer",company:"Salinas d'Es Trenc",role:"",email:"m.amer@flordesal.com",phone:"+34 971 655 306",country:"Spain",companyType:"Manufacturer",notes:"Premium Mallorcan sea salt producer. www.salinasdestrenc.com.",rating:"cold"},
+  {name:"Marcel Hoefert",company:"Sapanda",role:"Owner",email:"mhoefert@sapanda.com",phone:"+39 331 827 4074",country:"Italy",companyType:"Distributor",notes:"Wants DELIVERED PRICE QUOTE for pani puri. Restaurant distributor in Milan.",rating:"hot"}
+];
+
+document.getElementById('totalCount').textContent = contacts.length;
+
+const list = document.getElementById('contactList');
+contacts.forEach((c, i) => {
+  list.innerHTML += `<div class="contact ${c.rating}" id="row${i}">
+    <div><span class="co">${c.company}</span><div class="detail">${c.name}${c.role ? ' · '+c.role : ''} · ${c.email}</div></div>
+    <span class="status pending" id="st${i}">Pending</span>
+  </div>`;
+});
+
+async function startUpload() {
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading...';
+  let ok = 0, fail = 0;
+
+  for (let i = 0; i < contacts.length; i++) {
+    const st = document.getElementById('st' + i);
+    st.textContent = 'Sending...';
+    st.className = 'status sending';
+
+    const lead = {
+      timestamp: new Date().toISOString(),
+      name: contacts[i].name,
+      company: contacts[i].company,
+      role: contacts[i].role,
+      email: contacts[i].email,
+      phone: contacts[i].phone,
+      country: contacts[i].country,
+      companyType: contacts[i].companyType,
+      notes: '[Day 1] ' + contacts[i].notes,
+      rating: contacts[i].rating,
+      source: 'alimentaria-2026-day1',
+      cardImage: ''
+    };
+
+    try {
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(lead)
+      });
+      st.textContent = 'Sent ✓';
+      st.className = 'status done';
+      ok++;
+    } catch(e) {
+      st.textContent = 'Failed';
+      st.className = 'status fail';
+      fail++;
+    }
+    await new Promise(r => setTimeout(r, 400));
+    document.getElementById('summary').textContent = `${ok} sent · ${fail} failed · ${contacts.length - ok - fail} remaining`;
+  }
+
+  btn.textContent = `Done — ${ok}/${contacts.length} uploaded`;
+  document.getElementById('summary').textContent = ok === contacts.length
+    ? `All ${ok} Day 1 leads uploaded successfully`
+    : `Upload complete: ${ok} sent, ${fail} failed`;
+}
+</script>
+</body>
+</html>
