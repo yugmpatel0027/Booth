@@ -182,6 +182,8 @@
 
   /* Inline edit note in admin */
   .edit-note-btn { background: none; border: none; color: #006058; font-size: 11px; cursor: pointer; text-decoration: underline; margin-top: 4px; }
+  .delete-lead-btn { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #ccc; font-size: 16px; cursor: pointer; padding: 4px 6px; line-height: 1; border-radius: 4px; }
+  .delete-lead-btn:hover { color: #D4231A; background: #fef2f2; }
   .edit-note-area { width: 100%; padding: 8px; border: 1.5px solid #006058; border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; margin-top: 4px; height: 50px; resize: none; }
   .save-note-btn { padding: 4px 12px; background: #006058; color: #fff; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; margin-top: 4px; }
 
@@ -219,6 +221,61 @@
     display: none; background: #D4231A; color: #fff; text-align: center;
     padding: 8px; font-size: 12px; font-weight: 600;
   }
+
+  /* SCAN BUSINESS CARD */
+  .scan-section { text-align: center; margin-bottom: 20px; }
+  .scan-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; background: #006058; color: #F2C800; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .scan-btn:active { background: #004d47; }
+  .scan-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+  .scan-divider::before, .scan-divider::after { content: ''; flex: 1; height: 1px; background: #ddd; }
+  .scan-divider span { font-size: 12px; color: #999; font-weight: 600; }
+  .scan-status { font-size: 12px; color: #006058; margin-top: 8px; display: none; }
+  .scan-preview { max-width: 100%; max-height: 120px; border-radius: 6px; margin-top: 8px; display: none; border: 1px solid #ddd; }
+  #cardFileInput { display: none; }
+
+  /* Card image in admin */
+  .card-thumb { max-width: 120px; max-height: 80px; border-radius: 4px; margin-top: 6px; border: 1px solid #eee; cursor: pointer; }
+  .card-thumb-full {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9);
+    z-index: 400; display: none; align-items: center; justify-content: center; cursor: pointer;
+  }
+  .card-thumb-full img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
+
+  /* DUPLICATE WARNING */
+  .dupe-banner {
+    display: none; background: #C8922A; color: #fff; padding: 10px 14px; border-radius: 8px;
+    margin-bottom: 12px; font-size: 13px; text-align: center;
+  }
+  .dupe-banner b { display: block; margin-bottom: 4px; }
+  .dupe-btns { display: flex; gap: 8px; justify-content: center; margin-top: 8px; }
+  .dupe-btn {
+    padding: 6px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; border: none;
+  }
+  .dupe-update { background: #fff; color: #C8922A; }
+  .dupe-new { background: rgba(255,255,255,0.3); color: #fff; }
+
+  /* VOICE MEMO */
+  .voice-section { margin-top: 12px; text-align: center; }
+  .voice-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 2px solid #006058; background: #fff; color: #006058;
+    font-family: 'Inter', sans-serif;
+  }
+  .voice-btn.recording { border-color: #D4231A; color: #D4231A; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+  .voice-timer { font-size: 11px; color: #666; margin-top: 4px; display: none; }
+  .voice-playback { margin-top: 8px; display: none; }
+  .voice-playback audio { width: 100%; height: 32px; }
+
+  /* Admin voice player */
+  .admin-audio { margin-top: 6px; }
+  .admin-audio audio { height: 28px; width: 200px; }
 </style>
 </head>
 <body>
@@ -242,6 +299,24 @@
     <button class="lang-btn" data-lang="it">Italiano</button>
     <button class="lang-btn" data-lang="nl">Nederlands</button>
     <button class="lang-btn" data-lang="ar">العربية</button>
+  </div>
+
+  <!-- SCAN BUSINESS CARD -->
+  <div class="scan-section" id="scanSection">
+    <button type="button" class="scan-btn" onclick="document.getElementById('cardFileInput').click()">📷 Scan Business Card</button>
+    <input type="file" id="cardFileInput" accept="image/*" capture="environment" onchange="handleCardPhoto(event)">
+    <div class="scan-status" id="scanStatus">Reading card...</div>
+    <img class="scan-preview" id="scanPreview">
+    <div class="scan-divider"><span>or fill manually</span></div>
+  </div>
+
+  <!-- DUPLICATE WARNING -->
+  <div class="dupe-banner" id="dupeBanner">
+    <b id="dupeMsg">This email was already captured</b>
+    <div class="dupe-btns">
+      <button class="dupe-btn dupe-update" onclick="updateExisting()">Update Existing</button>
+      <button class="dupe-btn dupe-new" onclick="closeDupe()">Add as New</button>
+    </div>
   </div>
 
   <form id="leadForm" onsubmit="return submitForm(event)">
@@ -344,6 +419,11 @@
       <button class="rate-btn cold" onclick="selectRating('cold')">❄️ Cold</button>
     </div>
     <textarea class="rate-note" id="rateNote" placeholder="Quick note... (e.g. 200 stores, wants samples by April)"></textarea>
+    <div class="voice-section">
+      <button type="button" class="voice-btn" id="voiceBtn" onclick="toggleVoiceMemo()">🎙️ Voice Memo</button>
+      <div class="voice-timer" id="voiceTimer">0:00</div>
+      <div class="voice-playback" id="voicePlayback"><audio id="voiceAudio" controls></audio></div>
+    </div>
     <button class="rate-done" onclick="saveRating()">Save & Next</button>
     <button class="rate-skip" onclick="skipRating()">Skip</button>
   </div>
@@ -413,8 +493,15 @@
   </div>
 </div>
 
+<!-- FULL-SIZE CARD VIEWER -->
+<div class="card-thumb-full" id="cardViewer" onclick="this.style.display='none'">
+  <img id="cardViewerImg" src="">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
   const ADMIN_PIN = '2026';
+  let lastCardImage = ''; // base64 of last scanned card
   let currentLang = 'en';
   let pinCallback = null;
   let quickMode = false;
@@ -477,11 +564,219 @@
     document.getElementById('notes').placeholder = t.phNotes;
   }
 
+  // ===== BUSINESS CARD SCANNER =====
+  function handleCardPhoto(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const base64 = ev.target.result;
+      lastCardImage = base64;
+
+      // Show preview
+      const preview = document.getElementById('scanPreview');
+      preview.src = base64;
+      preview.style.display = 'block';
+
+      // Show status
+      const status = document.getElementById('scanStatus');
+      status.textContent = 'Reading card...';
+      status.style.display = 'block';
+
+      // Run OCR
+      if (typeof Tesseract !== 'undefined') {
+        Tesseract.recognize(base64, 'eng+spa+fra+deu', {
+          logger: function() {}
+        }).then(function(result) {
+          const text = result.data.text;
+          parseCardText(text);
+          status.textContent = 'Card scanned — check fields below';
+          setTimeout(() => { status.style.display = 'none'; }, 3000);
+        }).catch(function() {
+          status.textContent = 'Could not read card — fill manually';
+          setTimeout(() => { status.style.display = 'none'; }, 3000);
+        });
+      } else {
+        status.textContent = 'OCR unavailable (no WiFi?) — card saved, fill manually';
+        setTimeout(() => { status.style.display = 'none'; }, 3000);
+      }
+    };
+    reader.readAsDataURL(file);
+    e.target.value = ''; // reset so same file can be re-selected
+  }
+
+  function parseCardText(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 1);
+
+    // Extract email
+    const emailMatch = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/);
+    if (emailMatch) document.getElementById('email').value = emailMatch[0].toLowerCase();
+
+    // Extract phone — look for patterns with + or multiple digits
+    const phoneMatch = text.match(/[\+]?[\d\s\-\(\)\.]{8,}/);
+    if (phoneMatch) document.getElementById('phone').value = phoneMatch[0].trim();
+
+    // Name heuristic: first line that isn't a company-ish word, email, phone, or URL
+    const skipWords = ['inc','ltd','llc','corp','gmbh','s.l','s.a','group','international','www','http','@'];
+    for (const line of lines) {
+      const lower = line.toLowerCase();
+      if (lower.includes('@') || lower.includes('www') || lower.includes('http')) continue;
+      if (/^\+?\d[\d\s\-\(\)\.]{6,}$/.test(line)) continue;
+      const hasSkip = skipWords.some(w => lower.includes(w));
+      if (hasSkip) {
+        // Likely company name
+        if (!document.getElementById('company').value) {
+          document.getElementById('company').value = line;
+        }
+        continue;
+      }
+      // Check if it looks like a person's name (2-4 words, mostly letters)
+      const words = line.split(/\s+/);
+      if (words.length >= 2 && words.length <= 4 && /^[A-Za-zÀ-ÿ\s\-\.]+$/.test(line)) {
+        if (!document.getElementById('name').value) {
+          document.getElementById('name').value = line;
+          continue;
+        }
+      }
+      // If name is filled, next text line might be role or company
+      if (document.getElementById('name').value && !document.getElementById('company').value) {
+        document.getElementById('company').value = line;
+      } else if (document.getElementById('name').value && document.getElementById('company').value && !document.getElementById('role').value) {
+        document.getElementById('role').value = line;
+      }
+    }
+  }
+
+  function viewCard(base64) {
+    document.getElementById('cardViewerImg').src = base64;
+    document.getElementById('cardViewer').style.display = 'flex';
+  }
+
   // ===== DATA =====
   function getLeads() {
     try { return JSON.parse(localStorage.getItem('frontier_leads') || '[]'); } catch(e) { return []; }
   }
   function saveLeads(leads) { localStorage.setItem('frontier_leads', JSON.stringify(leads)); }
+
+  // ===== DUPLICATE DETECTION =====
+  let dupeIndex = -1;
+
+  // Check for duplicate when email field loses focus
+  document.getElementById('email').addEventListener('blur', function() {
+    const email = this.value.trim().toLowerCase();
+    if (!email) return;
+    const leads = getLeads();
+    const existing = leads.findIndex(l => l.email && l.email.toLowerCase() === email);
+    if (existing >= 0) {
+      dupeIndex = existing;
+      const l = leads[existing];
+      const d = new Date(l.timestamp);
+      const when = d.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+      document.getElementById('dupeMsg').innerHTML = '⚠️ ' + l.name + ' (' + l.company + ') already captured on ' + when;
+      document.getElementById('dupeBanner').style.display = 'block';
+    } else {
+      dupeIndex = -1;
+      document.getElementById('dupeBanner').style.display = 'none';
+    }
+  });
+
+  function updateExisting() {
+    // Pre-fill form with existing data so user can update
+    if (dupeIndex < 0) return;
+    const leads = getLeads();
+    const l = leads[dupeIndex];
+    document.getElementById('name').value = l.name || '';
+    document.getElementById('company').value = l.company || '';
+    document.getElementById('role').value = l.role || '';
+    document.getElementById('email').value = l.email || '';
+    document.getElementById('phone').value = l.phone || '';
+    document.getElementById('country').value = l.country || '';
+    document.getElementById('companyType').value = l.companyType || '';
+    if (l.products) {
+      l.products.split(', ').forEach(p => {
+        const cb = document.querySelector('.checkbox-group input[value="' + p + '"]');
+        if (cb) cb.checked = true;
+      });
+    }
+    document.getElementById('notes').value = l.notes || '';
+    // Remove the old entry — new submit will replace it
+    leads.splice(dupeIndex, 1);
+    saveLeads(leads);
+    document.getElementById('dupeBanner').style.display = 'none';
+    dupeIndex = -1;
+  }
+
+  function closeDupe() {
+    document.getElementById('dupeBanner').style.display = 'none';
+    dupeIndex = -1;
+  }
+
+  // ===== VOICE MEMO =====
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let voiceBlob = null;
+  let voiceTimerInterval = null;
+  let voiceSeconds = 0;
+
+  function toggleVoiceMemo() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      stopVoiceMemo();
+    } else {
+      startVoiceMemo();
+    }
+  }
+
+  function startVoiceMemo() {
+    voiceBlob = null;
+    audioChunks = [];
+    voiceSeconds = 0;
+    document.getElementById('voicePlayback').style.display = 'none';
+
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = function(e) { audioChunks.push(e.data); };
+      mediaRecorder.onstop = function() {
+        stream.getTracks().forEach(t => t.stop());
+        voiceBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(voiceBlob);
+        const audio = document.getElementById('voiceAudio');
+        audio.src = url;
+        document.getElementById('voicePlayback').style.display = 'block';
+        clearInterval(voiceTimerInterval);
+      };
+      mediaRecorder.start();
+      document.getElementById('voiceBtn').classList.add('recording');
+      document.getElementById('voiceBtn').innerHTML = '⏹️ Stop Recording';
+      document.getElementById('voiceTimer').style.display = 'block';
+      voiceTimerInterval = setInterval(function() {
+        voiceSeconds++;
+        const m = Math.floor(voiceSeconds / 60);
+        const s = voiceSeconds % 60;
+        document.getElementById('voiceTimer').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      }, 1000);
+    }).catch(function() {
+      alert('Microphone access denied. Check browser permissions.');
+    });
+  }
+
+  function stopVoiceMemo() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+    }
+    document.getElementById('voiceBtn').classList.remove('recording');
+    document.getElementById('voiceBtn').innerHTML = '🎙️ Re-record';
+    document.getElementById('voiceTimer').style.display = 'none';
+    clearInterval(voiceTimerInterval);
+  }
+
+  function blobToBase64(blob) {
+    return new Promise(function(resolve) {
+      const reader = new FileReader();
+      reader.onloadend = function() { resolve(reader.result); };
+      reader.readAsDataURL(blob);
+    });
+  }
 
   // ===== QUICK MODE =====
   function toggleQuickMode() {
@@ -526,7 +821,8 @@
       notes: document.getElementById('notes').value.trim(),
       language: currentLang,
       rating: '',
-      teamNote: ''
+      teamNote: '',
+      cardImage: lastCardImage || ''
     };
 
     const leads = getLeads();
@@ -563,15 +859,19 @@
     document.querySelector('.rate-btn.' + rating).classList.add('selected');
   }
 
-  function saveRating() {
+  async function saveRating() {
     if (lastLeadIndex >= 0) {
       const leads = getLeads();
       if (lastLeadIndex < leads.length) {
         leads[lastLeadIndex].rating = selectedRating || 'unrated';
         leads[lastLeadIndex].teamNote = document.getElementById('rateNote').value.trim();
+        if (voiceBlob) {
+          leads[lastLeadIndex].voiceMemo = await blobToBase64(voiceBlob);
+        }
         saveLeads(leads);
       }
     }
+    voiceBlob = null;
     document.getElementById('rateOverlay').style.display = 'none';
     goToForm();
   }
@@ -593,6 +893,17 @@
     document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').style.display = 'none';
+    document.getElementById('scanPreview').style.display = 'none';
+    document.getElementById('scanStatus').style.display = 'none';
+    lastCardImage = '';
+    voiceBlob = null;
+    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+    document.getElementById('voiceBtn').classList.remove('recording');
+    document.getElementById('voiceBtn').innerHTML = '🎙️ Voice Memo';
+    document.getElementById('voicePlayback').style.display = 'none';
+    document.getElementById('voiceTimer').style.display = 'none';
+    document.getElementById('dupeBanner').style.display = 'none';
+    dupeIndex = -1;
     setLang('en');
     lastLeadIndex = -1;
   }
@@ -703,6 +1014,7 @@
       const rLabel = r === 'hot' ? '🔥 HOT' : r === 'warm' ? '⚡ WARM' : r === 'cold' ? '❄️ COLD' : '? UNRATED';
 
       return `<div class="lead-card ${r}">
+        <button class="delete-lead-btn" onclick="deleteLead(${idx})" title="Delete this lead">✕</button>
         <div class="name">${esc(l.name)} <span class="rating-badge ${r}">${rLabel}</span></div>
         <div class="company">${esc(l.company)} — ${esc(l.role)}</div>
         <div class="details">
@@ -712,6 +1024,8 @@
           ${l.notes ? '<br>Notes: ' + esc(l.notes) : ''}
         </div>
         ${l.teamNote ? '<div class="team-note">📝 ' + esc(l.teamNote) + '</div>' : ''}
+        ${l.cardImage ? '<img class="card-thumb" src="' + l.cardImage + '" onclick="viewCard(this.src)" title="Tap to enlarge">' : ''}
+        ${l.voiceMemo ? '<div class="admin-audio">🎙️ <audio controls src="' + l.voiceMemo + '"></audio></div>' : ''}
         <div class="lead-time">${time}</div>
         <div class="rerate-btns">
           <button class="rerate-btn hot" onclick="reRate(${idx},'hot')">🔥 Hot</button>
@@ -725,6 +1039,17 @@
         </div>
       </div>`;
     }).join('');
+  }
+
+  // ===== DELETE INDIVIDUAL LEAD =====
+  function deleteLead(idx) {
+    const leads = getLeads();
+    if (idx < 0 || idx >= leads.length) return;
+    const lead = leads[idx];
+    if (!confirm('Delete lead: ' + lead.name + ' (' + lead.company + ')?')) return;
+    leads.splice(idx, 1);
+    saveLeads(leads);
+    renderAdmin();
   }
 
   // ===== RE-RATE & EDIT NOTE IN ADMIN =====
@@ -763,9 +1088,9 @@
   function exportCSV() {
     const leads = getLeads();
     if (leads.length === 0) { alert('No leads to export'); return; }
-    const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language','Rating','Team Note'];
+    const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language','Rating','Team Note','Has Voice Memo','Has Card Image'];
     const rows = leads.map(l => [
-      l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language, l.rating || 'unrated', l.teamNote || ''
+      l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language, l.rating || 'unrated', l.teamNote || '', l.voiceMemo ? 'Yes' : 'No', l.cardImage ? 'Yes' : 'No'
     ].map(v => '"' + (v || '').replace(/"/g, '""') + '"'));
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});
