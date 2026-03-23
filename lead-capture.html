@@ -59,7 +59,7 @@
   }
   .submit-btn:active { background: #004d47; }
 
-  /* SUCCESS PAGE */
+  /* SUCCESS PAGE — buyer sees this */
   .success-msg { display: none; text-align: center; padding: 40px 20px; max-width: 480px; margin: 0 auto; }
   .success-msg .check {
     width: 60px; height: 60px; background: #006058; border-radius: 50%;
@@ -69,19 +69,45 @@
   .success-msg h2 { color: #006058; font-size: 20px; margin-bottom: 8px; }
   .success-msg p { color: #666; font-size: 14px; margin-bottom: 16px; }
 
-  .catalog-btn {
-    display: inline-block; padding: 14px 28px; background: #006058; color: #F2C800;
-    border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
-    cursor: pointer; text-decoration: none; margin-bottom: 12px; letter-spacing: 0.3px;
-  }
-  .catalog-btn:active { background: #004d47; }
-  .catalog-hint { font-size: 12px; color: #999; margin-bottom: 20px; }
-
   .new-entry-btn {
     padding: 12px 32px; background: transparent; color: #006058;
     border: 2px solid #006058; border-radius: 8px; font-size: 14px;
     font-weight: 600; cursor: pointer;
   }
+
+  /* RATE LEAD OVERLAY — team sees this after tapping Next Contact */
+  .rate-overlay {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.85); z-index: 300; align-items: center; justify-content: center;
+  }
+  .rate-box {
+    background: #fff; border-radius: 16px; padding: 24px; width: 340px; text-align: center;
+  }
+  .rate-box h3 { color: #006058; font-size: 16px; margin-bottom: 4px; }
+  .rate-box .rate-name { color: #2D2D2D; font-size: 14px; margin-bottom: 16px; font-weight: 600; }
+  .rate-buttons { display: flex; gap: 8px; margin-bottom: 16px; }
+  .rate-btn {
+    flex: 1; padding: 12px 8px; border-radius: 8px; border: 2px solid #ddd;
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    background: #fff;
+  }
+  .rate-btn.hot { color: #D4231A; border-color: #D4231A; }
+  .rate-btn.hot.selected { background: #D4231A; color: #fff; }
+  .rate-btn.warm { color: #C8922A; border-color: #C8922A; }
+  .rate-btn.warm.selected { background: #C8922A; color: #fff; }
+  .rate-btn.cold { color: #666; border-color: #999; }
+  .rate-btn.cold.selected { background: #666; color: #fff; }
+  .rate-note {
+    width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 8px;
+    font-size: 14px; font-family: 'Inter', sans-serif; height: 60px; resize: none;
+    margin-bottom: 12px;
+  }
+  .rate-note:focus { border-color: #006058; outline: none; }
+  .rate-done {
+    width: 100%; padding: 12px; background: #006058; color: #F2C800; border: none;
+    border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer;
+  }
+  .rate-skip { background: none; border: none; color: #999; font-size: 12px; cursor: pointer; margin-top: 8px; }
 
   /* PIN OVERLAY */
   .pin-overlay {
@@ -109,20 +135,62 @@
 
   .admin-btn { padding: 8px 16px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer; }
   .export-btn { background: #F2C800; color: #2D2D2D; }
+  .quick-toggle { background: #006058; color: #F2C800; }
+  .quick-toggle.on { background: #D4231A; }
   .close-admin-btn { background: transparent; color: #F8F7F4; border: 1px solid #F8F7F4; }
 
   .admin-body { padding: 16px; max-width: 600px; margin: 0 auto; }
 
-  .admin-stats { display: flex; gap: 12px; margin-bottom: 20px; }
-  .stat-card { flex: 1; background: #fff; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #eee; }
-  .stat-card .num { font-size: 28px; font-weight: 700; color: #006058; }
-  .stat-card .lbl { font-size: 11px; color: #666; margin-top: 2px; }
+  .admin-stats { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-card { flex: 1; min-width: 70px; background: #fff; border-radius: 8px; padding: 10px 8px; text-align: center; border: 1px solid #eee; }
+  .stat-card .num { font-size: 24px; font-weight: 700; color: #006058; }
+  .stat-card .lbl { font-size: 10px; color: #666; margin-top: 2px; }
 
-  .lead-card { border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 12px; border-left: 4px solid #006058; background: #fff; }
+  /* FILTER TABS */
+  .filter-tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .filter-tab {
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid #ddd; background: #fff; color: #666;
+  }
+  .filter-tab.active { border-color: #006058; background: #006058; color: #fff; }
+  .filter-tab .count { font-weight: 400; opacity: 0.8; }
+
+  .lead-card {
+    border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 12px;
+    border-left: 4px solid #006058; background: #fff; position: relative;
+  }
+  .lead-card.hot { border-left-color: #D4231A; }
+  .lead-card.warm { border-left-color: #C8922A; }
+  .lead-card.cold { border-left-color: #999; }
+  .lead-card.unrated { border-left-color: #ddd; }
+
   .lead-card .name { font-weight: 700; font-size: 15px; color: #006058; }
   .lead-card .company { font-size: 14px; color: #2D2D2D; margin-top: 2px; }
   .lead-card .details { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.6; }
   .lead-card .lead-time { font-size: 10px; color: #aaa; margin-top: 4px; }
+
+  .rating-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; margin-left: 8px;
+  }
+  .rating-badge.hot { background: #D4231A; color: #fff; }
+  .rating-badge.warm { background: #C8922A; color: #fff; }
+  .rating-badge.cold { background: #999; color: #fff; }
+  .rating-badge.unrated { background: #eee; color: #999; }
+
+  .team-note { font-size: 12px; color: #006058; margin-top: 6px; font-style: italic; background: #E8F5F3; padding: 6px 8px; border-radius: 4px; }
+
+  /* Inline edit note in admin */
+  .edit-note-btn { background: none; border: none; color: #006058; font-size: 11px; cursor: pointer; text-decoration: underline; margin-top: 4px; }
+  .edit-note-area { width: 100%; padding: 8px; border: 1.5px solid #006058; border-radius: 6px; font-size: 12px; font-family: 'Inter', sans-serif; margin-top: 4px; height: 50px; resize: none; }
+  .save-note-btn { padding: 4px 12px; background: #006058; color: #fff; border: none; border-radius: 4px; font-size: 11px; cursor: pointer; margin-top: 4px; }
+
+  /* Re-rate buttons in admin */
+  .rerate-btns { display: flex; gap: 4px; margin-top: 6px; }
+  .rerate-btn { padding: 3px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; cursor: pointer; border: 1.5px solid; background: #fff; }
+  .rerate-btn.hot { color: #D4231A; border-color: #D4231A; }
+  .rerate-btn.warm { color: #C8922A; border-color: #C8922A; }
+  .rerate-btn.cold { color: #666; border-color: #999; }
 
   .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .checkbox-label {
@@ -145,6 +213,12 @@
     padding: 8px 16px; border-radius: 6px; border: 2px solid #D4231A;
     background: transparent; color: #D4231A; font-size: 12px; font-weight: 600; cursor: pointer;
   }
+
+  /* QUICK MODE BANNER */
+  .quick-banner {
+    display: none; background: #D4231A; color: #fff; text-align: center;
+    padding: 8px; font-size: 12px; font-weight: 600;
+  }
 </style>
 </head>
 <body>
@@ -153,6 +227,9 @@
   <h1>FRONTIER BAKERY</h1>
   <p class="header-sub">Alimentaria 2026 — Pavilion 7, Stand E41</p>
 </div>
+
+<!-- QUICK MODE BANNER -->
+<div class="quick-banner" id="quickBanner">QUICK MODE — 4 fields only</div>
 
 <!-- FORM -->
 <div class="form-container" id="formSection">
@@ -168,29 +245,29 @@
   </div>
 
   <form id="leadForm" onsubmit="return submitForm(event)">
-    <div class="form-group">
+    <div class="form-group" data-field="core">
       <label class="required" id="lbl-name">Full Name</label>
       <input type="text" id="name" required autocomplete="name" placeholder="John Smith">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="core">
       <label class="required" id="lbl-company">Company</label>
       <input type="text" id="company" required autocomplete="organization">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="extra">
       <label class="required" id="lbl-role">Job Title / Role</label>
-      <input type="text" id="role" required placeholder="Category Manager">
+      <input type="text" id="role" placeholder="Category Manager">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="core">
       <label class="required" id="lbl-email">Email</label>
       <input type="email" id="email" required autocomplete="email" placeholder="name@company.com">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="core">
       <label class="required" id="lbl-phone">Phone</label>
       <input type="tel" id="phone" required autocomplete="tel" placeholder="+34 600 000 000">
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="extra">
       <label class="required" id="lbl-country">Country</label>
-      <select id="country" required>
+      <select id="country">
         <option value="" id="opt-country-default">Select country</option>
         <option value="Spain">Spain / España</option>
         <option value="France">France</option>
@@ -214,7 +291,7 @@
         <option value="Other">Other</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="extra">
       <label id="lbl-type">Company Type</label>
       <select id="companyType">
         <option value="" id="opt-type-default">Select type</option>
@@ -225,7 +302,7 @@
         <option value="Other">Other</option>
       </select>
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="extra">
       <label id="lbl-products">Products of Interest</label>
       <div class="checkbox-group">
         <label class="checkbox-label"><input type="checkbox" value="Naan"> Naan</label>
@@ -240,7 +317,7 @@
         <label class="checkbox-label"><input type="checkbox" value="Punjab Biscuit"> Punjab Biscuit</label>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" data-field="extra">
       <label id="lbl-notes">Notes</label>
       <textarea id="notes" placeholder="Volume, timeline, specific requirements..."></textarea>
     </div>
@@ -248,12 +325,28 @@
   </form>
 </div>
 
-<!-- SUCCESS + CATALOG DOWNLOAD -->
+<!-- SUCCESS — buyer sees this -->
 <div class="success-msg" id="successSection">
   <div class="check">✓</div>
   <h2 id="msg-thanks">Thank You!</h2>
   <p id="msg-touch">We'll be in touch soon.</p>
-  <button class="new-entry-btn" onclick="resetForm()" id="btn-next">Next Contact</button>
+  <button class="new-entry-btn" onclick="showRating()" id="btn-next">Next Contact</button>
+</div>
+
+<!-- RATE LEAD OVERLAY — team rates after buyer walks away -->
+<div class="rate-overlay" id="rateOverlay">
+  <div class="rate-box">
+    <h3>Rate This Lead</h3>
+    <div class="rate-name" id="rateName"></div>
+    <div class="rate-buttons">
+      <button class="rate-btn hot" onclick="selectRating('hot')">🔥 Hot</button>
+      <button class="rate-btn warm" onclick="selectRating('warm')">⚡ Warm</button>
+      <button class="rate-btn cold" onclick="selectRating('cold')">❄️ Cold</button>
+    </div>
+    <textarea class="rate-note" id="rateNote" placeholder="Quick note... (e.g. 200 stores, wants samples by April)"></textarea>
+    <button class="rate-done" onclick="saveRating()">Save & Next</button>
+    <button class="rate-skip" onclick="skipRating()">Skip</button>
+  </div>
 </div>
 
 <!-- PIN OVERLAY -->
@@ -271,28 +364,47 @@
   <div class="admin-header">
     <h3 id="adminTitle">Leads</h3>
     <div class="admin-header-btns">
+      <button class="admin-btn quick-toggle" id="quickToggleBtn" onclick="toggleQuickMode()">Quick Mode</button>
       <button class="admin-btn export-btn" onclick="exportCSV()">Export CSV</button>
       <button class="admin-btn close-admin-btn" onclick="closeAdmin()">Close</button>
     </div>
   </div>
   <div class="admin-body">
-    <div class="admin-stats">
+    <div class="admin-stats" id="adminStats">
       <div class="stat-card">
         <div class="num" id="statTotal">0</div>
-        <div class="lbl">Total Leads</div>
+        <div class="lbl">Total</div>
       </div>
       <div class="stat-card">
         <div class="num" id="statToday">0</div>
         <div class="lbl">Today</div>
       </div>
-      <div class="stat-card">
-        <div class="num" id="statCountries">0</div>
-        <div class="lbl">Countries</div>
+      <div class="stat-card" style="border-top: 3px solid #D4231A;">
+        <div class="num" id="statHot">0</div>
+        <div class="lbl">Hot</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #C8922A;">
+        <div class="num" id="statWarm">0</div>
+        <div class="lbl">Warm</div>
+      </div>
+      <div class="stat-card" style="border-top: 3px solid #999;">
+        <div class="num" id="statCold">0</div>
+        <div class="lbl">Cold</div>
       </div>
     </div>
+
+    <!-- FILTER TABS -->
+    <div class="filter-tabs" id="filterTabs">
+      <div class="filter-tab active" data-filter="all">All <span class="count" id="filterAll"></span></div>
+      <div class="filter-tab" data-filter="hot">🔥 Hot <span class="count" id="filterHot"></span></div>
+      <div class="filter-tab" data-filter="warm">⚡ Warm <span class="count" id="filterWarm"></span></div>
+      <div class="filter-tab" data-filter="cold">❄️ <span class="count" id="filterCold"></span></div>
+      <div class="filter-tab" data-filter="unrated">? <span class="count" id="filterUnrated"></span></div>
+    </div>
+
     <div id="leadsDisplay"></div>
 
-    <!-- DANGER ZONE — bottom of admin, requires PIN re-entry -->
+    <!-- DANGER ZONE -->
     <div class="danger-zone">
       <h4>Danger Zone</h4>
       <p>Permanently delete all captured leads. Export your CSV first. This requires PIN re-entry.</p>
@@ -303,19 +415,12 @@
 
 <script>
   const ADMIN_PIN = '2026';
-  const CATALOG_URL = 'https://yugmpatel0027.github.io/Booth/frontier_product_summary.pdf';
-
-  // ===== CATALOG LABELS PER LANGUAGE =====
-  const catalogLabels = {
-    en: { btn: 'Download Our Product Catalog', hint: 'PDF — full product range, certifications & contact info' },
-    es: { btn: 'Descargar Nuestro Catálogo', hint: 'PDF — gama completa de productos, certificaciones e información de contacto' },
-    fr: { btn: 'Télécharger Notre Catalogue', hint: 'PDF — gamme complète de produits, certifications et coordonnées' },
-    de: { btn: 'Unseren Produktkatalog Herunterladen', hint: 'PDF — vollständige Produktpalette, Zertifizierungen und Kontaktdaten' },
-    pt: { btn: 'Baixar Nosso Catálogo', hint: 'PDF — gama completa de produtos, certificações e contactos' },
-    it: { btn: 'Scarica il Nostro Catalogo', hint: 'PDF — gamma completa prodotti, certificazioni e contatti' },
-    nl: { btn: 'Download Onze Productcatalogus', hint: 'PDF — volledig productassortiment, certificeringen en contactgegevens' },
-    ar: { btn: 'تحميل كتالوج المنتجات', hint: 'PDF — مجموعة المنتجات الكاملة والشهادات ومعلومات الاتصال' },
-  };
+  let currentLang = 'en';
+  let pinCallback = null;
+  let quickMode = false;
+  let currentFilter = 'all';
+  let selectedRating = '';
+  let lastLeadIndex = -1;
 
   // ===== LANGUAGE DATA =====
   const L = {
@@ -328,9 +433,6 @@
     nl: { name: 'Volledige Naam', company: 'Bedrijf', role: 'Functie', email: 'E-mail', phone: 'Telefoon', country: 'Land', type: 'Bedrijfstype', products: 'Productinteresse', notes: 'Opmerkingen', submit: 'Verzenden', thanks: 'Bedankt!', touch: 'We nemen snel contact met u op.', next: 'Volgend Contact', selCountry: 'Selecteer land', selType: 'Selecteer type', phName: 'Jan de Vries', phRole: 'Categorie Manager', phNotes: 'Volume, tijdlijn, specifieke eisen...' },
     ar: { name: 'الاسم الكامل', company: 'الشركة', role: 'المسمى الوظيفي', email: 'البريد الإلكتروني', phone: 'الهاتف', country: 'البلد', type: 'نوع الشركة', products: 'المنتجات المطلوبة', notes: 'ملاحظات', submit: 'إرسال', thanks: '!شكراً لك', touch: 'سنتواصل معك قريباً.', next: 'جهة اتصال تالية', selCountry: 'اختر البلد', selType: 'اختر النوع', phName: 'محمد أحمد', phRole: 'مدير الفئة', phNotes: 'الحجم، الجدول الزمني، المتطلبات...' },
   };
-
-  let currentLang = 'en';
-  let pinCallback = null; // what to do after PIN is verified
 
   // ===== LANGUAGE =====
   document.getElementById('langToggle').addEventListener('click', function(e) {
@@ -381,6 +483,30 @@
   }
   function saveLeads(leads) { localStorage.setItem('frontier_leads', JSON.stringify(leads)); }
 
+  // ===== QUICK MODE =====
+  function toggleQuickMode() {
+    quickMode = !quickMode;
+    applyQuickMode();
+    const btn = document.getElementById('quickToggleBtn');
+    btn.textContent = quickMode ? 'Full Mode' : 'Quick Mode';
+    btn.classList.toggle('on', quickMode);
+  }
+
+  function applyQuickMode() {
+    document.querySelectorAll('[data-field="extra"]').forEach(el => {
+      el.style.display = quickMode ? 'none' : 'block';
+    });
+    document.getElementById('quickBanner').style.display = quickMode ? 'block' : 'none';
+    // In quick mode, remove required from hidden fields
+    if (quickMode) {
+      document.getElementById('role').removeAttribute('required');
+      document.getElementById('country').removeAttribute('required');
+    } else {
+      document.getElementById('role').setAttribute('required', '');
+      document.getElementById('country').setAttribute('required', '');
+    }
+  }
+
   // ===== FORM SUBMIT =====
   function submitForm(e) {
     e.preventDefault();
@@ -398,20 +524,16 @@
       companyType: document.getElementById('companyType').value,
       products: products.join(', '),
       notes: document.getElementById('notes').value.trim(),
-      language: currentLang
+      language: currentLang,
+      rating: '',
+      teamNote: ''
     };
 
     const leads = getLeads();
     leads.push(lead);
     saveLeads(leads);
+    lastLeadIndex = leads.length - 1;
 
-    // Set catalog button text in buyer's language
-    const cl = catalogLabels[currentLang] || catalogLabels.en;
-    document.getElementById('catalog-text').textContent = cl.btn;
-    document.getElementById('catalog-hint').textContent = cl.hint;
-    document.getElementById('catalogLink').href = CATALOG_URL;
-
-    // Set success page direction for Arabic
     const successEl = document.getElementById('successSection');
     successEl.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
 
@@ -419,12 +541,60 @@
     successEl.style.display = 'block';
   }
 
-  function resetForm() {
+  // ===== RATING SYSTEM =====
+  function showRating() {
+    const leads = getLeads();
+    if (lastLeadIndex >= 0 && lastLeadIndex < leads.length) {
+      const lead = leads[lastLeadIndex];
+      document.getElementById('rateName').textContent = lead.name + ' — ' + lead.company;
+      selectedRating = '';
+      document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('selected'));
+      document.getElementById('rateNote').value = '';
+      document.getElementById('successSection').style.display = 'none';
+      document.getElementById('rateOverlay').style.display = 'flex';
+    } else {
+      goToForm();
+    }
+  }
+
+  function selectRating(rating) {
+    selectedRating = rating;
+    document.querySelectorAll('.rate-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.rate-btn.' + rating).classList.add('selected');
+  }
+
+  function saveRating() {
+    if (lastLeadIndex >= 0) {
+      const leads = getLeads();
+      if (lastLeadIndex < leads.length) {
+        leads[lastLeadIndex].rating = selectedRating || 'unrated';
+        leads[lastLeadIndex].teamNote = document.getElementById('rateNote').value.trim();
+        saveLeads(leads);
+      }
+    }
+    document.getElementById('rateOverlay').style.display = 'none';
+    goToForm();
+  }
+
+  function skipRating() {
+    if (lastLeadIndex >= 0) {
+      const leads = getLeads();
+      if (lastLeadIndex < leads.length && !leads[lastLeadIndex].rating) {
+        leads[lastLeadIndex].rating = 'unrated';
+        saveLeads(leads);
+      }
+    }
+    document.getElementById('rateOverlay').style.display = 'none';
+    goToForm();
+  }
+
+  function goToForm() {
     document.getElementById('leadForm').reset();
     document.querySelectorAll('.checkbox-group input').forEach(cb => cb.checked = false);
     document.getElementById('formSection').style.display = 'block';
     document.getElementById('successSection').style.display = 'none';
     setLang('en');
+    lastLeadIndex = -1;
   }
 
   // ===== TRIPLE-TAP ADMIN =====
@@ -435,7 +605,7 @@
     if (tapCount >= 3) { clearTimeout(tapTimer); tapCount = 0; requestPin(openAdmin); }
   });
 
-  // ===== PIN SYSTEM (reusable for admin + delete) =====
+  // ===== PIN SYSTEM =====
   function requestPin(callback, title) {
     pinCallback = callback;
     document.getElementById('pinTitle').textContent = title || 'Admin Access';
@@ -470,9 +640,22 @@
     if (e.target === this) closePin();
   });
 
+  // ===== FILTER TABS =====
+  document.getElementById('filterTabs').addEventListener('click', function(e) {
+    const tab = e.target.closest('.filter-tab');
+    if (!tab) return;
+    currentFilter = tab.dataset.filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    renderAdmin();
+  });
+
   // ===== ADMIN =====
   function openAdmin() {
     document.getElementById('adminPanel').style.display = 'block';
+    const btn = document.getElementById('quickToggleBtn');
+    btn.textContent = quickMode ? 'Full Mode' : 'Quick Mode';
+    btn.classList.toggle('on', quickMode);
     renderAdmin();
   }
   function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
@@ -481,24 +664,46 @@
     const leads = getLeads();
     const today = new Date().toISOString().slice(0, 10);
     const todayLeads = leads.filter(l => l.timestamp.slice(0, 10) === today);
-    const countries = new Set(leads.map(l => l.country).filter(Boolean));
+    const hot = leads.filter(l => l.rating === 'hot').length;
+    const warm = leads.filter(l => l.rating === 'warm').length;
+    const cold = leads.filter(l => l.rating === 'cold').length;
+    const unrated = leads.filter(l => !l.rating || l.rating === 'unrated').length;
 
     document.getElementById('statTotal').textContent = leads.length;
     document.getElementById('statToday').textContent = todayLeads.length;
-    document.getElementById('statCountries').textContent = countries.size;
+    document.getElementById('statHot').textContent = hot;
+    document.getElementById('statWarm').textContent = warm;
+    document.getElementById('statCold').textContent = cold;
     document.getElementById('adminTitle').textContent = leads.length + ' Lead' + (leads.length !== 1 ? 's' : '');
 
+    document.getElementById('filterAll').textContent = leads.length ? '(' + leads.length + ')' : '';
+    document.getElementById('filterHot').textContent = hot ? '(' + hot + ')' : '';
+    document.getElementById('filterWarm').textContent = warm ? '(' + warm + ')' : '';
+    document.getElementById('filterCold').textContent = cold ? '(' + cold + ')' : '';
+    document.getElementById('filterUnrated').textContent = unrated ? '(' + unrated + ')' : '';
+
+    // Filter leads
+    let filtered = leads;
+    if (currentFilter === 'hot') filtered = leads.filter(l => l.rating === 'hot');
+    else if (currentFilter === 'warm') filtered = leads.filter(l => l.rating === 'warm');
+    else if (currentFilter === 'cold') filtered = leads.filter(l => l.rating === 'cold');
+    else if (currentFilter === 'unrated') filtered = leads.filter(l => !l.rating || l.rating === 'unrated');
+
     const display = document.getElementById('leadsDisplay');
-    if (leads.length === 0) {
-      display.innerHTML = '<p class="no-leads-msg">No leads captured yet</p>';
+    if (filtered.length === 0) {
+      display.innerHTML = '<p class="no-leads-msg">No leads ' + (currentFilter !== 'all' ? 'in this category' : 'captured yet') + '</p>';
       return;
     }
 
-    display.innerHTML = leads.slice().reverse().map(l => {
+    display.innerHTML = filtered.slice().reverse().map((l, ri) => {
+      const idx = leads.indexOf(l);
       const d = new Date(l.timestamp);
       const time = d.toLocaleDateString('en-GB', {day:'numeric',month:'short'}) + ' ' + d.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
-      return `<div class="lead-card">
-        <div class="name">${esc(l.name)}</div>
+      const r = l.rating || 'unrated';
+      const rLabel = r === 'hot' ? '🔥 HOT' : r === 'warm' ? '⚡ WARM' : r === 'cold' ? '❄️ COLD' : '? UNRATED';
+
+      return `<div class="lead-card ${r}">
+        <div class="name">${esc(l.name)} <span class="rating-badge ${r}">${rLabel}</span></div>
         <div class="company">${esc(l.company)} — ${esc(l.role)}</div>
         <div class="details">
           ${esc(l.email)}${l.phone ? ' | ' + esc(l.phone) : ''}<br>
@@ -506,9 +711,47 @@
           ${l.products ? 'Products: ' + esc(l.products) : ''}
           ${l.notes ? '<br>Notes: ' + esc(l.notes) : ''}
         </div>
+        ${l.teamNote ? '<div class="team-note">📝 ' + esc(l.teamNote) + '</div>' : ''}
         <div class="lead-time">${time}</div>
+        <div class="rerate-btns">
+          <button class="rerate-btn hot" onclick="reRate(${idx},'hot')">🔥 Hot</button>
+          <button class="rerate-btn warm" onclick="reRate(${idx},'warm')">⚡ Warm</button>
+          <button class="rerate-btn cold" onclick="reRate(${idx},'cold')">❄️ Cold</button>
+          <button class="edit-note-btn" onclick="editNote(${idx})">✏️ Edit Note</button>
+        </div>
+        <div id="noteEdit${idx}" style="display:none;">
+          <textarea class="edit-note-area" id="noteArea${idx}">${esc(l.teamNote || '')}</textarea>
+          <button class="save-note-btn" onclick="saveNote(${idx})">Save Note</button>
+        </div>
       </div>`;
     }).join('');
+  }
+
+  // ===== RE-RATE & EDIT NOTE IN ADMIN =====
+  function reRate(idx, rating) {
+    const leads = getLeads();
+    if (idx < leads.length) {
+      leads[idx].rating = rating;
+      saveLeads(leads);
+      renderAdmin();
+    }
+  }
+
+  function editNote(idx) {
+    const el = document.getElementById('noteEdit' + idx);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    if (el.style.display === 'block') {
+      document.getElementById('noteArea' + idx).focus();
+    }
+  }
+
+  function saveNote(idx) {
+    const leads = getLeads();
+    if (idx < leads.length) {
+      leads[idx].teamNote = document.getElementById('noteArea' + idx).value.trim();
+      saveLeads(leads);
+      renderAdmin();
+    }
   }
 
   function esc(s) {
@@ -520,9 +763,9 @@
   function exportCSV() {
     const leads = getLeads();
     if (leads.length === 0) { alert('No leads to export'); return; }
-    const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language'];
+    const headers = ['Timestamp','Name','Company','Role','Email','Phone','Country','Company Type','Products','Notes','Language','Rating','Team Note'];
     const rows = leads.map(l => [
-      l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language
+      l.timestamp, l.name, l.company, l.role, l.email, l.phone, l.country, l.companyType, l.products, l.notes, l.language, l.rating || 'unrated', l.teamNote || ''
     ].map(v => '"' + (v || '').replace(/"/g, '""') + '"'));
     const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8'});
@@ -532,13 +775,13 @@
     a.click(); URL.revokeObjectURL(url);
   }
 
-  // ===== DELETE — requires PIN re-entry =====
+  // ===== DELETE =====
   function initClear() {
     if (!confirm('This will permanently delete ALL leads. Have you exported the CSV?')) return;
     closeAdmin();
     requestPin(function() {
       localStorage.removeItem('frontier_leads');
-      openAdmin(); // re-open admin to show empty state
+      openAdmin();
     }, 'Re-enter PIN to Delete');
   }
 </script>
