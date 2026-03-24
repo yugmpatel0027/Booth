@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Frontier Bakery — Alimentaria 2026</title>
+<title>Frontier Bakery | Alimentaria 2026</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -779,12 +779,24 @@ async function submitLead() {
     localStorage.setItem('frontier_leads', JSON.stringify(saved));
   } catch(e) {}
 
-  fetch(SHEET_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(lead)
-  }).catch(()=>{});
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'text/plain'},
+      body: JSON.stringify(lead),
+      redirect: 'follow'
+    });
+  } catch(e) {
+    // no-cors fallback if CORS fails
+    try {
+      fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(lead)
+      }).catch(()=>{});
+    } catch(e2) {}
+  }
 
   leadCount++;
   localStorage.setItem('frontier_leads_count', leadCount);
@@ -797,10 +809,11 @@ function showSuccess(name) {
   document.getElementById('formWrap').style.display = 'none';
   const s = document.getElementById('successSection');
   s.style.display = 'block';
-  document.getElementById('statusBar').className = 'status-bar';
-  const msgKey = 'success-message';
-  const baseTx = translations[currentLanguage][msgKey];
-  document.getElementById('successMsg').textContent = 'Thanks ' + name.split(' ')[0] + '! ' + baseTx;
+  hideStatus();
+  const firstName = name ? name.split(' ')[0] : '';
+  const baseTx = (translations[currentLanguage] && translations[currentLanguage]['success-message']) || 'Contact saved. You will receive a follow-up from the Frontier Bakery team shortly.';
+  document.getElementById('successMsg').textContent = firstName ? ('Thanks ' + firstName + '! ' + baseTx) : baseTx;
+  window.scrollTo(0, 0);
 }
 
 function resetForm() {
